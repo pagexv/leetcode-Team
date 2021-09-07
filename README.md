@@ -243,10 +243,41 @@ N:
 
 ### [26.Remove Duplicated from sorted Array](https://leetcode.com/problems/remove-duplicates-from-sorted-array)
 
-H:
+- H:
 
-- Pesudo Code
+  - Pesudo Code
+
+  Originally: 
+
+  ```
+  for i = 1; i < nums.length;i++:
+  	pre = cur;
+  	cur = nums[i]
+  	if cur == pre
+  		remove duplicate and bring rest of array forward
+  ```
+
+  Improved solution:
+
+  - Improvement:
+    - Fast pointer to skip duplicated value
+    - Slow pointer stops when detecting multiple duplicates, so that it can handle repeated numbers like 1,1,1,1,2,2.
+
+  ```
+  slow_pointer = 0;
+  for fast_pointer = 1; fast_pointer < nums.length; fast_pointer++
+  	if nums[slow_pointer] != nums[fast_pointer]
+  		slow_pointer++;
+  		nums[slow_pointer] = nums[fast_pointer]
+  return slow_pointer + 1
+  ```
+
+  
+
 - Analysis
+
+  - Time: O(n)
+  - Space O(1)
 
 N:
 双指针法
@@ -276,30 +307,27 @@ H:
 
 - Pesudo Code
 
-Originally: 
+  ```java
+  public int removeElement(int[] nums, int val) {
+      int i = 0;
+      int n = nums.length;
+      while (i < n) {
+          if (nums[i] == val) {
+              nums[i] = nums[n - 1];
+              // reduce array size by one
+              n--;
+          } else {
+              i++;
+          }
+      }
+      return n;
+  }
+  ```
 
-```
-for i = 1; i < nums.length;i++:
-	pre = cur;
-	cur = nums[i]
-	if cur == pre
-		remove duplicate and bring rest of array forward
-```
+- Analysis
 
-Improved solution:
-
-- Improvement:
-  - Fast pointer to skip duplicated value
-  - Slow pointer stops when detecting multiple duplicates, so that it can handle repeated numbers like 1,1,1,1,2,2.
-
-```
-slow_pointer = 0;
-for fast_pointer = 1; fast_pointer < nums.length; fast_pointer++
-	if nums[slow_pointer] != nums[fast_pointer]
-		slow_pointer++;
-		nums[slow_pointer] = nums[fast_pointer]
-return slow_pointer + 1
-```
+  - Time O(n)
+  - Space O(1)
 
 Naicheng:
 
@@ -415,7 +443,10 @@ Correct solution:
       }
   ```
 
-  
+- Analysis
+
+  - Time O(n)
+  - Space O(1)
 
 Naicheng
 
