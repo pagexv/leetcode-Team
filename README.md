@@ -53,9 +53,9 @@ class Solution:
 
 ### [16.3Sum Closest](https://leetcode.com/problems/3sum-closest)
 
-#### H:
+H:
 
-###### Brute force
+Brute force
 
 - Pesudo Code
 
@@ -82,7 +82,7 @@ class Solution:
 
   Space O(n)
 
-###### Two pointer
+Two pointer
 
 Sort the array, then use two point
 
@@ -115,7 +115,7 @@ Sort the array, then use two point
 
   Space O(nlogn ) ~ O(n)
 
-###### Binary search
+Binary search
 
 ```
 closest = Integer.MAX
@@ -157,11 +157,11 @@ Naicheng
 
 
 
-#### [18.4Sum](https://leetcode.com/problems/4sum)
+### [18.4Sum](https://leetcode.com/problems/4sum)
 
-##### H:
+H:
 
-######  2 pointer / hash set
+2 pointer / hash set
 
 - Pesudo Code
 
@@ -264,6 +264,10 @@ class Solution:
         return slow
 ```
 
+
+
+
+
 ---
 
 ### [27.Remove element](https://leetcode.com/problems/remove-element)
@@ -271,9 +275,31 @@ class Solution:
 H:
 
 - Pesudo Code
-- Analysis
 
+Originally: 
 
+```
+for i = 1; i < nums.length;i++:
+	pre = cur;
+	cur = nums[i]
+	if cur == pre
+		remove duplicate and bring rest of array forward
+```
+
+Improved solution:
+
+- Improvement:
+  - Fast pointer to skip duplicated value
+  - Slow pointer stops when detecting multiple duplicates, so that it can handle repeated numbers like 1,1,1,1,2,2.
+
+```
+slow_pointer = 0;
+for fast_pointer = 1; fast_pointer < nums.length; fast_pointer++
+	if nums[slow_pointer] != nums[fast_pointer]
+		slow_pointer++;
+		nums[slow_pointer] = nums[fast_pointer]
+return slow_pointer + 1
+```
 
 Naicheng:
 
@@ -299,6 +325,97 @@ class Solution:
 -----
 
 ### [31. Next Permutation](https://leetcode.com/problems/next-permutation/)
+
+Hanfei:
+
+Intution:
+
+- Perhaps need to swap current digit with others. i.e 1,2,3
+  - if index = 0, array[index] = 1, might need to swap index = 0 with either index = 1 or 2
+- Start from test cases: 1234567, ended with case 7654321
+  - Observation 1: this is in a loop, with max and min boundary. They have a pattern for the next number. Find the pattern, then it becomes 1 step solution.
+  - Observation 2: this ordering happens from lowest digit to highest digit.
+    - input 7654321, we examine digit using slow, fast pointer, there we cannot find array[fast] < array[slow], thus, we reach the end 
+    - input 6754321, we find when array[fast] = 6, array[slow] = 7 so the next step should make swap between slow & fast pointer
+    - input 7564321, we find when array[fast] = 5, array[slow] = 6 so the next step should make swap between slow & fast pointer, then sequence become 7654321
+
+```java
+    public void nextPermutation(int[] nums) {
+        int slow = nums.length -1;
+        boolean noSwap = true;
+        for(int fast = nums.length -2; fast >=0;fast--){
+            if(nums[fast] >= nums[slow]){
+                slow--;
+            } else {
+                int temp = nums[fast];
+                nums[fast] = nums[slow];
+                nums[slow] = temp;
+                noSwap = false;
+                break;
+            }
+        }
+        
+        if(noSwap){
+            int i = 0;
+            int j = nums.length - 1;
+            while (i < j){
+                int temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+                i++;
+                j--;
+            }
+            
+        }
+    }
+```
+
+Correct solution:
+
+- Should simply swap fast slow point position, instead, track back and find the proper spot
+
+  ```java
+      class Solution {
+          public void nextPermutation(int[] nums) {
+              int slow = nums.length -1;
+              int fast = nums.length -2;
+              boolean noSwap = true;
+              for(; fast >=0;fast--){
+                  if(nums[fast] < nums[slow]){
+                      break;
+              } else {
+                         slow--;
+              }
+          }
+              if(fast >= 0){
+                         //trace back 
+                      int i = nums.length -1;
+                      while( nums[i] <= nums[fast]){
+                          i--;
+                      }
+                      noSwap = false;
+                      swap(nums,fast,i);
+              }
+                     reverse(nums,fast+1);
+          }
+           public void reverse(int[] nums, int start) {
+              int i = start, j = nums.length - 1;
+              while (i < j) {
+                  swap(nums, i, j);
+                  i++;
+                  j--;
+              }
+          }
+            private void swap(int[] nums, int i, int j) {
+              int temp = nums[i];
+              nums[i] = nums[j];
+              nums[j] = temp;
+          }
+  
+      }
+  ```
+
+  
 
 Naicheng
 
@@ -327,8 +444,6 @@ def nextPermutation(nums):
 ```
 
 ## 09-06 ~ 09-12
-
-Goal: compelet 14 problem
 
 [33.Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array)
 
