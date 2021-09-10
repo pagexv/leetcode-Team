@@ -476,18 +476,40 @@ def nextPermutation(nums):
 
 ## 09-06 ~ 09-12
 
-[33.Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array)
+### [33.Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array)
 
-[34.Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array)
+Hanfei:
 
-[39. Combination Sum](https://leetcode.com/problems/combination-sum)
+Original idea:
 
-[40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
+1. This is a rotation array, we can use two pointer from 2 ends
+2. Stop condition is find the rotate or left >= right
+3. Since sorted if target > array[left] left ++, if target < array[right], right--
 
-[54. Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)
 
-[55. Jump Game](https://leetcode.com/problems/jump-game/)
 
-[56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+Correct solution:
 
-[57. Insert Interval](https://leetcode.com/problems/insert-interval/)
+1. Binary search to find rotate
+2. Binary Search on each part of sorted array to find target
+
+
+
+Analysis
+
+- Time O(logN)
+- Space: O(1)
+
+### [34.Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array)
+
+### [39. Combination Sum](https://leetcode.com/problems/combination-sum)
+
+### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
+
+### [54. Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)
+
+### [55. Jump Game](https://leetcode.com/problems/jump-game/)
+
+### [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
+
+### [57. Insert Interval](https://leetcode.com/problems/insert-interval/)
