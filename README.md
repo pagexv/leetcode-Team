@@ -726,7 +726,16 @@ Correct solution
 
 Original thoughts
 
-- 
+- brute force. build a pool of input * 150, and generates the result
+
+Correct solution
+
+- back tracking
+
+  - incrementally build candidates to solution
+  - abandons candidates as soon as it fails
+
+  
 
 ### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
 
@@ -737,3 +746,47 @@ Original thoughts
 ### [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
 
 ### [57. Insert Interval](https://leetcode.com/problems/insert-interval/)
+
+### 35.[Search Insert Position](https://leetcode.com/problems/search-insert-position)
+
+### 36.[Valid Sudoku](https://leetcode.com/problems/valid-sudoku)
+
+### 45.[Jump Game II](https://leetcode.com/problems/jump-game-ii)
+
+### 46.[Permutations](https://leetcode.com/problems/permutations)
+
+### 47.[Permutations II](https://leetcode.com/problems/permutations-ii)
+
+### 48.[Rotate Image](https://leetcode.com/problems/rotate-image)
+
+
+
+## 09-13 - 09 - 17
+
+### 53.[Maximum Subarray](https://leetcode.com/problems/maximum-subarray)
+
+### 56.[ Merge Intervals](https://leetcode.com/problems/merge-intervals)
+
+### 57.[Insert Interval](https://leetcode.com/problems/insert-interval)
+
+### 59.[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii)
+
+### 63.[Unique Paths II](https://leetcode.com/problems/unique-paths-ii)
+
+### 64.[ Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum)
+
+### 66.[Plus One](https://leetcode.com/problems/plus-one)
+
+### 73.[Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes)
+
+### 74.[Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix)
+
+### 75.[Sort Colors](https://leetcode.com/problems/sort-colors)
+
+### 77.[Combinations](https://leetcode.com/problems/combinations)
+
+### 78.[ Subsets](https://leetcode.com/problems/subsets)
+
+### 79.[ Word Search](https://leetcode.com/problems/word-search)
+
+### 80.[Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii)
