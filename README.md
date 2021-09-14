@@ -724,18 +724,31 @@ Correct solution
 
 ### [39. Combination Sum](https://leetcode.com/problems/combination-sum)
 
+Hanfei
+
 Original thoughts
 
 - brute force. build a pool of input * 150, and generates the result
 
 Correct solution
 
+![image-20210914015734925](pictures\image-20210914015734925.png)
+
 - back tracking
 
   - incrementally build candidates to solution
   - abandons candidates as soon as it fails
 
+  ```
   
+  ```
+
+
+
+Analysis
+
+- Time
+- Space
 
 ### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
 
