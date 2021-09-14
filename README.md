@@ -488,12 +488,96 @@ Original idea:
 
 
 
-Correct solution:
+Correct solution: :star:
 
 1. Binary search to find rotate
 2. Binary Search on each part of sorted array to find target
 
-
+```java
+class Solution {
+    
+    int [] nums;
+    int target;
+    
+    
+    public int findRotate(int left, int right){
+        
+        if(nums[left] < nums[right]){ // base case, there is no rotate
+            return 0;
+        }
+        
+        while (left <= right){ // start of the loop
+            int pivot = (left + right) / 2;
+            if (nums[pivot] > nums[pivot + 1]){// pivot + 1 is desired rotate
+                return pivot + 1;
+            }
+            
+            if(nums[left] <= nums[pivot]){// the left part is good, next time look to right part
+                // very important this equal sign
+                left = pivot + 1;
+            } else { // the left part is not good, next time look to the left
+                right = pivot - 1;
+            }
+        }
+            
+        return 0;
+        
+    }
+    
+    public int binSearch(int left, int right, int target){// this is a sorted array
+        while(left <= right){
+            int pivot = (left + right) / 2;
+            if(nums[pivot] == target)
+                return pivot;
+            
+            if(nums[pivot] > target){ // curr value > target look to left
+                
+                right = pivot - 1;
+            } else { // curr value < target, look to right
+                left = pivot + 1;
+                
+            }
+        }
+        
+        return -1;
+    }
+    
+    
+    public int search(int[] nums, int target) {
+        this.nums = nums;
+        this.target = target;
+        int left = 0;
+        int right = nums.length - 1;
+        //missing condition check
+        if (this.nums.length == 1){
+            if (nums[0] == target)
+                return 0;
+            return -1;
+        }
+        
+        
+        int pivot = findRotate(left,right);
+        int result = -1;
+        
+        if(nums[pivot] == target){
+            return pivot;
+        }
+        
+        if(pivot == 0){
+            return binSearch(left,right,target);
+        }
+        
+        if(nums[0] > target){ //special notice: look right
+            return binSearch(pivot, right,target);
+        } 
+        
+        return binSearch(left, pivot,target);
+    }
+    
+    
+    
+}
+```
 
 Analysis
 
@@ -502,7 +586,147 @@ Analysis
 
 ### [34.Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array)
 
+Hanfei
+
+Original thought:
+
+- use binary search
+
+But it doesn't solve the first occurrence problem
+
+```java
+class Solution {
+    
+    public int binSearch(int left, int right, int[] nums, int target){
+        
+        while(left <= right){
+            int pivot = (left + right) / 2;
+            if(nums[pivot] == target){
+                return pivot;
+            }
+            
+            if(nums[pivot] < target){
+                left = pivot + 1;
+            } else {
+                right = pivot -1 ;
+            }
+        }
+        
+        return -1;
+    }
+    
+    
+    
+    public int[] searchRange(int[] nums, int target) {
+    
+        int left = 0;
+        int right = nums.length - 1;
+        
+        int pivot = binSearch(left,right,nums,target);
+        
+        int [] result = new int [2];
+        result[0] = -1;
+        result[1] = -1;
+        
+        if(pivot == -1){
+            return result;
+        }
+        
+        
+        int end = pivot;
+        for(; end < nums.length;end++){
+            if(nums[pivot] != nums[end]){
+                end -= 1;
+                break;
+            }
+              
+                
+        }
+        result[0] = pivot;
+        result[1] = end;
+        
+        return result;
+        
+        
+    }
+}
+```
+
+Correct solution
+
+- correct the binary search with
+
+```java
+    public int binSearch(int left, int right, int[] nums, int target, boolean firstOccure){
+        
+        while(left <= right){
+            int pivot = (left + right) / 2;
+            if(nums[pivot] == target){
+                
+                if(firstOccure){
+                    if(left == pivot || nums[pivot - 1] != target){ // if we cannot further extend to left, return current
+                        return pivot;
+                    }
+                    right = pivot - 1; // otherwise, explore to left
+                } else {
+                    if(right == pivot || nums[pivot + 1] != target){ // if we cannot further extends to right, then return current
+                        return pivot;
+                    }
+                    left = pivot + 1;// otherwise, explore to right
+                }
+            }  else if(nums[pivot] < target){
+                left = pivot + 1;
+            } else {
+                right = pivot -1 ;
+            }
+        }
+        
+        return -1;
+    }
+```
+
+- correct the main function with
+
+  ```
+      public int[] searchRange(int[] nums, int target) {
+      
+          int left = 0;
+          int right = nums.length - 1;
+          int [] result = new int [2];
+          result[0] = -1;
+          result[1] = -1;
+          
+          
+          int first = binSearch(left,right,nums,target,true);
+          
+          
+          
+          if(first == -1){
+              return result;
+          }
+          
+          
+          int end = binSearch(left,right,nums,target,false);
+      
+          result[0] = first;
+          result[1] = end;
+          
+          return result;
+          
+          
+      }
+  ```
+
+  Analysis:
+
+  - Time O(logN)
+  - Space O(1)
+
 ### [39. Combination Sum](https://leetcode.com/problems/combination-sum)
+
+Original thoughts
+
+- 
 
 ### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
 
