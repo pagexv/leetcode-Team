@@ -739,20 +739,161 @@ Correct solution
   - incrementally build candidates to solution
   - abandons candidates as soon as it fails
 
-  ```
+  ```java
+  class Solution {
+      
+      
+      public void backTrack(List<List<Integer>> result , LinkedList<Integer> combination, int target, int start, int [] candidates){
+          
+          if(target == 0){
+              result.add(new ArrayList<Integer>(combination)); // need to use new ArrayList<Integer>(combination)) otherwise, it won't give input
+              return;
+          }
+          
+          if(target < 0){
+              return;
+          }
+          
+          for(int i = start; i < candidates.length ;i++){ 
+              combination.add(candidates[i]); // each loop will first consider the start position of the candidate
+              backTrack(result, combination, target - candidates[i], i, candidates);
+              combination.removeLast(); // if candidates fails, then remove the last one and examine next element in the array
+              
+          }
+      }
   
+  public List<List<Integer>> combinationSum(int[] candidates, int target) {
+      List<List<Integer>> result = new ArrayList<>();
+      LinkedList<Integer> combination = new LinkedList<>(); // linked list has method removeLast
+      backTrack(result,combination,target,0,candidates);
+      
+      
+      
+      return result;
+  }
+  }
   ```
 
 
 
 Analysis
 
-- Time
-- Space
+> Let *N* be the number of candidates, T be the target value, and *M* be the minimal value among the candidates.
+
+- Time O(N ^(T/M + 1))
+  - First of all, the fan-out of each node would be bounded to N*N*, *i.e.* the total number of candidates.
+  - The total # of backtracking = # of node in the DFS tree
+  - The maximum depth = T/M
+  - The maximal number of nodes in N-ary tree of T/M is N^(T/M + 1)
+- Space 
+  - The number of recursive calls can pile up to T/M where we keep on adding the smallest element to the combination. As a result, the space overhead of the recursion is O(T/M)
+  - Note that, we did not take into the account the space used to hold the final results for the space complexity.
 
 ### [40. Combination Sum II](https://leetcode.com/problems/combination-sum-ii/)
 
+Hanfei
+
+- Original thoughts:
+  - Inherit combination sum backtrace  
+  - change start index from i = start to i = start + 1
+  - Didn't work since there is duplicate case [1,7,1] and target = 9
+    - the solution will be [1,7] and [7,1]            
+
+```java
+        for(int i = start+1; i < candidates.length ;i++){ 
+            combination.add(candidates[i]); // each loop will first consider the start position of the candidate
+            backTrack(result, combination, target - candidates[i], i, candidates);
+            combination.removeLast(); // if candidates fails, then remove the last one and examine next element in the array
+        }
+```
+
+Correct solution
+
+- either keep a counter
+
+- or use index
+
+  - sort the array first then skip duplicate value
+
+  ```java
+          for(int i = start; i < candidates.length ;i++){ 
+              if(i > start && candidates[i] == candidates[i-1]){//skip duplicate
+                  continue;
+              }
+              
+              combination.add(candidates[i]); // each loop will first consider the start position of the candidate
+              backTrack(result, combination, target - candidates[i], i+1, candidates);
+              combination.removeLast(); // if candidates fails, then remove the last one and examine next element in the array
+          }
+  ```
+
+
+
+Analysis
+
+![image-20210915003350000](pictures/image-20210915003350000.png)
+
+
+
+
+
 ### [54. Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)
+
+Original thoughts
+
+- flatten array
+- for array 1-9, it has pattern 1,2,3,4 -> 4+4, 9,10,11 -> 12
+- marked visited as -1
+
+Correct solution
+
+```java
+public List<Integer> spiralOrder(int[][] matrix) {
+        int VISITED = 101;
+        int rows = matrix.length;
+        int columns = matrix[0].length;
+        // Four directions that we will move: right, down, left, up.
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        // Initial direction: moving right.
+        int currentDirection = 0;
+        // The number of times we change the direction.
+        int changeDirection = 0;
+        // Current place that we are at is (row, col).
+        // row is the row index; col is the column index.
+        int row = 0;
+        int col = 0;
+        // Store the first element and mark it as visited.
+        List<Integer> result = new ArrayList<>();
+        result.add(matrix[0][0]);
+        matrix[0][0] = VISITED;
+        while (changeDirection < 2) {
+            while (row + directions[currentDirection][0] >= 0 &&
+                   row + directions[currentDirection][0] < rows &&
+                   col + directions[currentDirection][1] >= 0 &&
+                   col + directions[currentDirection][1] < columns &&
+                   matrix[row + directions[currentDirection][0]]
+                   [col + directions[currentDirection][1]] != VISITED) {
+                // Reset this to 0 since we did not break and change the direction.
+                changeDirection = 0;
+                // Calculate the next place that we will move to.
+                row = row + directions[currentDirection][0];
+                col = col + directions[currentDirection][1];
+                result.add(matrix[row][col]);
+                matrix[row][col] = VISITED;
+            }
+            // Change our direction.
+            currentDirection = (currentDirection + 1) % 4;
+            // Increment change_direction because we changed our direction.
+            changeDirection++;
+        }
+        return result;
+    }
+```
+
+Analysis
+
+- Time O(M*N) iterate each element once
+- Space O(1), didn't use other space
 
 ### [55. Jump Game](https://leetcode.com/problems/jump-game/)
 
