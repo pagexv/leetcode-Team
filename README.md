@@ -897,9 +897,251 @@ Analysis
 
 ### [55. Jump Game](https://leetcode.com/problems/jump-game/)
 
+Hanfei
+
+Original solution (incorrect) --> dead end
+
+```java
+    public boolean canJump(int[] nums) {
+        int jumpIndex = 1;
+        boolean firstRound  = true;
+        int beforeSum = -1;
+        int count = 0;
+        while(jumpIndex < nums.length && jumpIndex >= 0){
+            
+            if(jumpIndex == nums.length - 1)
+                return true;
+            if(beforeSum == jumpIndex){
+                 count++;
+                if(count > 2)
+                    break;
+            } else {
+                beforeSum = jumpIndex;
+            }
+               
+
+            int jumpInterval = nums[jumpIndex];
+            
+           jumpIndex += jumpInterval;
+            
+        }
+        return jumpIndex == nums.length;
+    }
+```
+
+
+
+Recommended solution:
+
+- Backtracking (most inefficient)
+
+  ```java
+      public boolean canJumpToNext(int position, int [] nums){
+          if(position == nums.length - 1){
+              return true;
+          }
+          
+          int furtherJump = Math.min(position + nums[position], nums.length - 1);
+          for (int next = furthestJump; nextPosition > position; nextPosition--){
+              if(canJumpToNext(next, nums)){
+                  return true;
+              }
+          }
+          return false;
+      }
+      public boolean canJump(int[] nums) {
+  
+          return canJumpToNext(0,nums);
+      }
+  ```
+
+- Dynamic programming (with mem)![image-20210915235629073](pictures/image-20210915235629073.png)
+
+  ```java
+  enum Index {
+      GOOD, BAD, UNKNOWN
+  } // new added
+  
+  
+  class Solution {
+      Index[] memo;
+      
+      public boolean canJumpToNext(int position, int [] nums){
+          if (memo[position] != Index.UNKNOWN) {
+              return memo[position] == Index.GOOD ? true : false;
+          } // new added
+          
+          int furtherJump = Math.min(position + nums[position], nums.length - 1);
+          for (int next = furtherJump; next > position; next--){
+              if(canJumpToNext(next, nums)){
+                  memo[position] = Index.GOOD; // new added
+                  return true;
+              } 
+          }
+          memo[position] = Index.BAD; // new added
+          return false;
+      }
+      public boolean canJump(int[] nums) {
+          memo = new Index[nums.length];// new added
+          for (int i = 0; i < memo.length; i++) {
+              memo[i] = Index.UNKNOWN;
+          }// new added
+          memo[memo.length - 1] = Index.GOOD; // new added
+          return canJumpToNext(0,nums);
+      }
+  }
+  ```
+
+  ![image-20210915235610801](pictures/image-20210915235610801.png)
+
+- greedy (most efficient)
+
+  ```java
+  public class Solution {
+      public boolean canJump(int[] nums) {
+          int lastPos = nums.length - 1;
+          for (int i = nums.length - 1; i >= 0; i--) {
+              if (i + nums[i] >= lastPos) {
+                  lastPos = i;
+              }
+          }
+          return lastPos == 0;
+      }
+  }
+  ```
+
+  Time: O(n)
+
+  Space O(1)
+
 ### [56. Merge Intervals](https://leetcode.com/problems/merge-intervals/)
 
+Hanfei
+
+Original thoughts:
+
+- sort array of interval by first element
+
+- look to extend interval
+
+  ```java
+  class Solution {
+      public int[][] merge(int[][] intervals) {
+          Arrays.sort(intervals, (a,b) -> Integer.compare(a[0],b[0]));
+          LinkedList<int[]> merged = new LinkedList<>();
+          
+          for(int [] invterval: intervals){
+              if(merged.isEmpty()){
+                  merged.add(invterval);
+                  continue;
+              }
+              
+              
+              
+              if(merged.getLast()[1] >= invterval[0] ){
+                  merged.getLast()[1] = Math.max(invterval[1],merged.getLast()[1]);
+              } else {
+                  merged.add(invterval);
+              }
+          }
+          
+          return merged.toArray(new int[merged.size()][]);
+      }
+  }
+  ```
+
+  Time: O(NlogN)  most of sort takes this time
+
+  Space = O(N)
+
 ### [57. Insert Interval](https://leetcode.com/problems/insert-interval/)
+
+original solution:
+
+- tweak merge interval a little bit
+
+  - failed tested case 
+    - [[1,5]]
+      [0,3]
+
+  ```java
+  class Solution {
+      public int[][] insert(int[][] intervals, int[] newInterval) {
+          LinkedList<int[]> merged = new LinkedList<>();
+          boolean notfound = true;
+          boolean firstTime = true;
+          for(int [] invterval: intervals){
+              if(merged.isEmpty()){
+                  merged.add(invterval);
+          
+              }
+              
+              if(merged.getLast()[0] <= newInterval[0] &&newInterval[0] <= merged.getLast()[1] && notfound){
+                   merged.getLast()[1] = Math.max(merged.getLast()[1],newInterval[1]);
+                   notfound = false;
+              } 
+              
+  
+              
+              if(merged.getLast()[1] >= invterval[0] ){
+                  merged.getLast()[1] = Math.max(invterval[1],merged.getLast()[1]);
+              } else {
+                  merged.add(invterval);
+              }
+          }
+          
+          if(notfound){
+                  merged.add(newInterval);
+              }
+          
+          return merged.toArray(new int[merged.size()][]);
+      }
+  }
+  ```
+
+  correct solution
+
+  ```java
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+      // init data
+      int newStart = newInterval[0], newEnd = newInterval[1];
+      int idx = 0, n = intervals.length;
+      LinkedList<int[]> output = new LinkedList<int[]>();
+  
+      // add all intervals starting before newInterval
+      while (idx < n && newStart > intervals[idx][0])
+        output.add(intervals[idx++]);
+  
+      // add newInterval
+      int[] interval = new int[2];
+      // if there is no overlap, just add the interval
+      if (output.isEmpty() || output.getLast()[1] < newStart)
+        output.add(newInterval);
+      // if there is an overlap, merge with the last interval
+      else {
+        interval = output.removeLast();
+        interval[1] = Math.max(interval[1], newEnd);
+        output.add(interval);
+      }
+  
+      // add next intervals, merge with newInterval if needed
+      while (idx < n) {
+        interval = intervals[idx++];
+        int start = interval[0], end = interval[1];
+        // if there is no overlap, just add an interval
+        if (output.getLast()[1] < start) output.add(interval);
+        // if there is an overlap, merge with the last interval
+        else {
+          interval = output.removeLast();
+          interval[1] = Math.max(interval[1], end);
+          output.add(interval);
+        }
+      }
+      return output.toArray(new int[output.size()][2]);
+    }
+  ```
+
+  
 
 ### 35.[Search Insert Position](https://leetcode.com/problems/search-insert-position)
 
