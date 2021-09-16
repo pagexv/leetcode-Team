@@ -1141,7 +1141,9 @@ original solution:
     }
   ```
 
-  
+  Time: O(N)
+
+  Space: O(N)
 
 ### 35.[Search Insert Position](https://leetcode.com/problems/search-insert-position)
 
