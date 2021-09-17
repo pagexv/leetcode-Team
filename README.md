@@ -1147,9 +1147,196 @@ original solution:
 
 ### 35.[Search Insert Position](https://leetcode.com/problems/search-insert-position)
 
+Hanfei:
+
+Original thoughts:
+
+- binary search
+
+  - take care of the left side of interval
+
+    ```java
+    class Solution {
+        public int searchInsert(int[] nums, int target) {
+            
+            int left = 0;
+            int right = nums.length - 1;
+            int result = 0;
+            if(nums.length == 1){
+                return nums[0] >= target? 0 : 1;
+            }
+            while(left < right){
+                int pivot = (left + right) / 2;
+                if(nums[pivot] == target){
+                    return pivot;
+                }
+                
+                if(nums[left] >= target){
+                     result = left;
+                } else if(nums[right] < target){
+                  result = right + 1;
+                } else {
+                     result = nums[pivot] > target ? pivot : pivot + 1;
+                }
+                
+                if(nums[pivot] > target){
+                    right = pivot - 1;
+                } else {
+                    left = pivot + 1;
+                }    
+            }
+            
+            return result;
+            
+        }
+    }
+    ```
+
+
+
+Simplified solution:
+
+```java
+class Solution {
+  public int searchInsert(int[] nums, int target) {
+    int pivot, left = 0, right = nums.length - 1;
+    while (left <= right) {
+      pivot = left + (right - left) / 2;
+      if (nums[pivot] == target) return pivot;
+      if (target < nums[pivot]) right = pivot - 1;
+      else left = pivot + 1;
+    }
+    return left;
+  }
+}
+```
+
+
+
 ### 36.[Valid Sudoku](https://leetcode.com/problems/valid-sudoku)
 
+Hanfei:
+
+Original thoughts:
+
+- use back tracking / dynamic programming
+- difficulties: how to use enforce grid search?
+
+
+
+suggested solution
+
+> 1.see java lambda expression:https://blog.csdn.net/qq_31635851/article/details/116593033
+>
+> IntFunction 
+
+> 2. all match example![image-20210917004222310](pictures/image-20210917004222310.png)
+
+```java
+class Solution {
+    private final char EMPTY = '.';
+        public boolean isValidSudoku(char[][] A) {
+        for (int i = 0; i < 9; i++) {
+            final int pos = i;
+            if (!isValid(x -> A[pos][x])) return false;
+            if (!isValid(x -> A[x][pos])) return false;
+            if (!isValid(x -> A[(pos / 3) * 3 + x / 3][(pos % 3) * 3 + x % 3])) return false;
+        }
+        return true;
+    }
+
+    private boolean isValid(IntFunction<Character> a) {
+        Set<Character> set = new HashSet<>();
+        return IntStream.range(0, 9).allMatch(x -> a.apply(x) == '.' || set.add(a.apply(x))); // duplicate value will return false when set
+    }
+}
+
+```
+
+optimal solution (use bit-wise operation)
+
+```java
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        int N = 9;
+
+        // Use a binary number to record previous occurrence
+        int[] rows = new int[N];
+        int[] cols = new int[N];
+        int[] boxes = new int[N];
+
+        for (int r = 0; r < N; r++) {
+            for (int c = 0; c < N; c++) {
+                // Check if the position is filled with number
+                if (board[r][c] == '.') {
+                    continue;
+                }
+                int val = board[r][c] - '0';
+                int pos = 1 << (val - 1);
+
+                // Check the row
+                if ((rows[r] & pos) > 0) {
+                    return false;
+                }
+                rows[r] |= pos;
+
+                // Check the column
+                if ((cols[c] & pos) > 0) {
+                    return false;
+                }
+                cols[c] |= pos;
+
+                // Check the box
+                int idx = (r / 3) * 3 + c / 3;
+                if ((boxes[idx] & pos) > 0) {
+                    return false;
+                }
+                boxes[idx] |= pos;
+            }
+        }
+        return true;
+    }
+}
+```
+
+Time O(N^2)
+
+Space O(N)
+
 ### 45.[Jump Game II](https://leetcode.com/problems/jump-game-ii)
+
+Hanfei:
+
+Original thoughts:
+
+- greedy algorithm
+
+  - difficulties: we don't know the future of the array.
+  - solution: iterate each item and find the furthest one 
+
+  ```java
+  class Solution {
+      public int jump(int[] nums) {
+          int counter = 0;
+          int farthest = 0;
+          int currentEnd = 0;
+          for(int i = 0; i < nums.length -1;i++){
+              farthest = Math.max(farthest, i + nums[i]);
+              
+              if(i == currentEnd){
+                  counter++;
+                  currentEnd = farthest;
+              }
+          }
+          
+          return counter;
+      }
+  }
+  ```
+
+  Time: O(N)
+
+  Space O(1)
 
 ### 46.[Permutations](https://leetcode.com/problems/permutations)
 
