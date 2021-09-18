@@ -1340,19 +1340,207 @@ Original thoughts:
 
 ### 46.[Permutations](https://leetcode.com/problems/permutations)
 
+Original thoughts
+
+- brute force
+
+- backtrack
+
+  ```java
+  class Solution {
+      List<List<Integer>> result = new ArrayList<>();
+      public void backTrace(List<List<Integer>>  result, List<Integer> comb, int[] nums, int start){
+          if(nums.length == start){
+              result.add(comb);
+              
+              return;
+          }
+          
+          for(int i = start; i < nums.length; i++){
+              comb.add(nums[i]);
+              
+              backTrace(result, comb,nums, i+1);
+              comb = new ArrayList<>();
+           }
+          
+      }
+      
+      
+      public List<List<Integer>> permute(int[] nums) {
+          
+          backTrace(result, new ArrayList<>(), nums, 0);
+          return result;
+          
+      }
+  }
+  ```
+
+Correct solution
+
+- backtrack change the function
+
+  ```java
+  class Solution {
+      
+      public void backTrace(List<List<Integer>>  result, List<Integer> comb, int[] nums, int start){
+          if(nums.length == start){
+              result.add(new ArrayList<Integer>(comb));
+              
+              return;
+          }
+          
+          for(int i = start; i < nums.length; i++){
+              Collections.swap(comb, start, i);
+              
+              backTrace(result, comb,nums, start+1);
+              
+              Collections.swap(comb, i, start);
+              
+           }
+          
+      }
+      
+      
+      public List<List<Integer>> permute(int[] nums) {
+          ArrayList<Integer> nums_lst = new ArrayList<Integer>();
+      for (int num : nums){
+           nums_lst.add(num);
+      }
+       List<List<Integer>> result = new ArrayList<>();
+          backTrace(result, nums_lst, nums, 0);
+          return result;
+          
+      }
+  }
+  ```
+
+  Analysis
+
+  ![image-20210917210502145](pictures/image-20210917210502145.png)
+
 ### 47.[Permutations II](https://leetcode.com/problems/permutations-ii)
+
+original thoughts 
+
+- backtrack
+
+  ```java
+  class Solution {
+      HashSet <List<Integer>> set = new HashSet<>();
+      public List<List<Integer>> permuteUnique(int[] nums) {
+          boolean used[] = new boolean[nums.length];
+          permute(new ArrayList<Integer>(),nums, used);
+          return new ArrayList(set);
+      }
+      
+      public void permute(List<Integer> permutation, int []nums,  boolean used[]){
+                  
+          if(permutation.size() == nums.length){
+              set.add(new ArrayList<Integer>(permutation));
+              return;
+          }
+  
+          for(int i = 0; i < nums.length; i++){
+              if(!used[i]){
+                  permutation.add(nums[i]);
+                  used[i] = true;
+                  permute(permutation, nums, used);
+                  permutation.remove(permutation.size()-1);
+                  used[i] =false;
+              }
+  
+          }
+          
+      }
+  }
+  ```
+
+better solution
+
+```java
+class Solution {
+
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        List<List<Integer>> results = new ArrayList<>();
+
+        // count the occurrence of each number
+        HashMap<Integer, Integer> counter = new HashMap<>();
+        for (int num : nums) {
+            if (!counter.containsKey(num))
+                counter.put(num, 0);
+            counter.put(num, counter.get(num) + 1);
+        }
+
+        LinkedList<Integer> comb = new LinkedList<>();
+        this.backtrack(comb, nums.length, counter, results);
+        return results;
+    }
+
+    protected void backtrack(
+            LinkedList<Integer> comb,
+            Integer N,
+            HashMap<Integer, Integer> counter,
+            List<List<Integer>> results) {
+
+        if (comb.size() == N) {
+            // make a deep copy of the resulting permutation,
+            // since the permutation would be backtracked later.
+            results.add(new ArrayList<Integer>(comb));
+            return;
+        }
+
+        for (Map.Entry<Integer, Integer> entry : counter.entrySet()) {
+            Integer num = entry.getKey();
+            Integer count = entry.getValue();
+            if (count == 0)
+                continue;
+            // add this number into the current combination
+            comb.addLast(num);
+            counter.put(num, count - 1);
+
+            // continue the exploration
+            backtrack(comb, N, counter, results);
+
+            // revert the choice for the next exploration
+            comb.removeLast();
+            counter.put(num, count);
+        }
+    }
+}
+```
+
+![image-20210917230839728](pictures/image-20210917230839728.png)
 
 ### 48.[Rotate Image](https://leetcode.com/problems/rotate-image)
 
+Hanfei 
+
+correct solution
+
+```java
+class Solution {
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < (n + 1) / 2; i ++) {
+            for (int j = 0; j < n / 2; j++) {
+                int temp = matrix[n - 1 - j][i];
+                matrix[n - 1 - j][i] = matrix[n - 1 - i][n - j - 1];
+                matrix[n - 1 - i][n - j - 1] = matrix[j][n - 1 -i];
+                matrix[j][n - 1 - i] = matrix[i][j];
+                matrix[i][j] = temp;
+            }
+        }
+    }
+}
+```
+
+![image-20210918000543336](pictures/image-20210918000543336.png)
 
 
-## 09-13 - 09 - 17
+
+## 09-13 ~ 09 - 19
 
 ### 53.[Maximum Subarray](https://leetcode.com/problems/maximum-subarray)
-
-### 56.[ Merge Intervals](https://leetcode.com/problems/merge-intervals)
-
-### 57.[Insert Interval](https://leetcode.com/problems/insert-interval)
 
 ### 59.[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii)
 
@@ -1375,3 +1563,10 @@ Original thoughts:
 ### 79.[ Word Search](https://leetcode.com/problems/word-search)
 
 ### 80.[Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii)
+
+### 81 [Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii)
+
+### 82[Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array)
+
+## 09-20 ~ 09-26
+
