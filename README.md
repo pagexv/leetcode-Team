@@ -839,6 +839,8 @@ Analysis
 
 ### [54. Spiral Matrix](https://leetcode.com/problems/spiral-matrix/)
 
+Hanfei
+
 Original thoughts
 
 - flatten array
@@ -894,6 +896,46 @@ Analysis
 
 - Time O(M*N) iterate each element once
 - Space O(1), didn't use other space
+
+Modified solution
+
+- reference spiral solution 2 
+
+```java
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int size = matrix.length * matrix[0].length;
+        int visited = -101;
+        List<Integer> result = new ArrayList<>();
+        int cnt = 1;
+        int dir[][] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int d = 0;
+        int row = 0;
+        int col = 0;
+       
+      
+        while (cnt <= size) {
+            if(matrix[row][col] != visited){  // stop condition
+                result.add(matrix[row][col]);
+                matrix[row][col] = visited;
+                int r = Math.floorMod(row + dir[d][0], matrix.length);
+                int c = Math.floorMod(col + dir[d][1], matrix[0].length);
+
+                // change direction if next cell is non zero
+                if (matrix[r][c] == visited) d = (d + 1) % 4;
+
+                row += dir[d][0];
+                col += dir[d][1];
+            }
+            
+            cnt++;
+        } 
+        return result;
+    }
+}
+```
+
+
 
 ### [55. Jump Game](https://leetcode.com/problems/jump-game/)
 
@@ -1055,6 +1097,8 @@ Original thoughts:
   Space = O(N)
 
 ### [57. Insert Interval](https://leetcode.com/problems/insert-interval/)
+
+Hanfei
 
 original solution:
 
@@ -1340,6 +1384,8 @@ Original thoughts:
 
 ### 46.[Permutations](https://leetcode.com/problems/permutations)
 
+Hanfei
+
 Original thoughts
 
 - brute force
@@ -1419,6 +1465,8 @@ Correct solution
   ![image-20210917210502145](pictures/image-20210917210502145.png)
 
 ### 47.[Permutations II](https://leetcode.com/problems/permutations-ii)
+
+Hanfei
 
 original thoughts 
 
@@ -1542,9 +1590,280 @@ class Solution {
 
 ### 53.[Maximum Subarray](https://leetcode.com/problems/maximum-subarray)
 
+Hanfei
+
+Original thoughts (correct answer)
+
+- Dynamic programming
+
+  - keep a max value all the time, and a current sum
+
+    ```java
+    class Solution {
+        public int maxSubArray(int[] nums) {
+         
+            int maxSum =  -1000000;
+            int currentSum = 0;
+            for(int i = 0; i < nums.length;i++){
+                if(nums[i] > currentSum + nums[i]){
+                    currentSum = nums[i];    
+                } else {
+                    currentSum +=  nums[i];
+                }
+                
+                maxSum = Math.max(maxSum, currentSum);
+                
+            
+            }
+            
+            return  maxSum;
+        }
+    }
+    ```
+
+    Time: O(N)
+
+    Space O(1)
+
+Reference solution:
+
+DP
+
+```java
+class Solution {
+    public int maxSubArray(int[] nums) {
+        // Initialize our variables using the first element.
+        int currentSubarray = nums[0];
+        int maxSubarray = nums[0];
+        
+        // Start with the 2nd element since we already used the first one.
+        for (int i = 1; i < nums.length; i++) {
+            int num = nums[i];
+            // If current_subarray is negative, throw it away. Otherwise, keep adding to it.
+            currentSubarray = Math.max(num, currentSubarray + num);
+            maxSubarray = Math.max(maxSubarray, currentSubarray);
+        }
+        
+        return maxSubarray;
+    }
+}
+```
+
+Divide and conquer
+
+```java
+class Solution {
+    private int[] numsArray;
+    
+    public int maxSubArray(int[] nums) {
+        numsArray = nums;
+        
+        // Our helper function is designed to solve this problem for
+        // any array - so just call it using the entire input!
+        return findBestSubarray(0, numsArray.length - 1);
+    }
+    
+    private int findBestSubarray(int left, int right) {
+        // Base case - empty array.
+        if (left > right) {
+            return Integer.MIN_VALUE;
+        }
+        
+        int mid = Math.floorDiv(left + right, 2);
+        int curr = 0;
+        int bestLeftSum = 0;
+        int bestRightSum = 0;
+        
+        // Iterate from the middle to the beginning.
+        for (int i = mid - 1; i >= left; i--) {
+            curr += numsArray[i];
+            bestLeftSum = Math.max(bestLeftSum, curr);
+        }
+        
+        // Reset curr and iterate from the middle to the end.
+        curr = 0;
+        for (int i = mid + 1; i <= right; i++) {
+            curr += numsArray[i];
+            bestRightSum = Math.max(bestRightSum, curr);
+        }
+        
+        // The bestCombinedSum uses the middle element and the best
+        // possible sum from each half.
+        int bestCombinedSum = numsArray[mid] + bestLeftSum + bestRightSum;
+        
+        // Find the best subarray possible from both halves.
+        int leftHalf = findBestSubarray(left, mid - 1);
+        int rightHalf = findBestSubarray(mid + 1, right);
+        
+        // The largest of the 3 is the answer for any given input array.
+        return Math.max(bestCombinedSum, Math.max(leftHalf, rightHalf));
+    }
+}
+
+```
+
+
+
 ### 59.[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii)
 
+Hanfei
+
+Original thoughts
+
+- modify spiral matrix solution
+
+```java
+class Solution {
+    public int[][] generateMatrix(int n) {
+        
+        int UNVISITED = -1;
+        int [][] matrix = new int [n][n];
+        
+        int rows = n;
+        int columns = n;
+       
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+      
+        int currentDirection = 0;
+        
+        int changeDirection = 0;
+       
+        int row = 0;
+        int col = 0;
+        
+        List<Integer> result = new ArrayList<>();
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                matrix[i][j] = UNVISITED;
+            }
+        }
+        matrix[0][0] = 1;
+        int i = 2;
+        while (changeDirection < 2) {
+           
+            while (row + directions[currentDirection][0] >= 0 &&
+                   row + directions[currentDirection][0] < rows &&
+                   col + directions[currentDirection][1] >= 0 &&
+                   col + directions[currentDirection][1] < columns &&
+                   matrix[row + directions[currentDirection][0]]
+                   [col + directions[currentDirection][1]] == UNVISITED) {
+                // Reset this to 0 since we did not break and change the direction.
+                changeDirection = 0;
+                // Calculate the next place that we will move to.
+                row = row + directions[currentDirection][0];
+                col = col + directions[currentDirection][1];
+             
+                matrix[row][col] = i++;
+
+            }
+      
+            // Change our direction.
+            currentDirection = (currentDirection + 1) % 4;
+            // Increment change_direction because we changed our direction.
+            changeDirection++;
+        }
+        return matrix;
+        
+    }
+}
+```
+
+Time: O(N^2)
+
+Space: O(N)
+
+
+
+Simplified solution
+
+> FloorMod example
+>
+> ![image-20210919001632412](D:\leetcode-Team\pictures\image-20210919001632412.png)
+>
+> 
+
+```java
+class Solution {
+    public int[][] generateMatrix(int n) {
+        int[][] result = new int[n][n];
+        int cnt = 1;
+        int dir[][] = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int d = 0;
+        int row = 0;
+        int col = 0;
+        while (cnt <= n * n) {
+            result[row][col] = cnt++;
+            int r = Math.floorMod(row + dir[d][0], n);
+            int c = Math.floorMod(col + dir[d][1], n);
+
+            // change direction if next cell is non zero
+            if (result[r][c] != 0) d = (d + 1) % 4;
+
+            row += dir[d][0];
+            col += dir[d][1];
+        }
+        return result;
+    }
+}
+```
+
+
+
 ### 63.[Unique Paths II](https://leetcode.com/problems/unique-paths-ii)
+
+Hanfei 
+
+- Thoughts
+  - Dynamic programming
+
+Correct solution
+
+```java
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+
+        int R = obstacleGrid.length;
+        int C = obstacleGrid[0].length;
+
+        // If the starting cell has an obstacle, then simply return as there would be
+        // no paths to the destination.
+        if (obstacleGrid[0][0] == 1) {
+            return 0;
+        }
+
+        // Number of ways of reaching the starting cell = 1.
+        obstacleGrid[0][0] = 1;
+
+        // Filling the values for the first column
+        for (int i = 1; i < R; i++) {
+            obstacleGrid[i][0] = (obstacleGrid[i][0] == 0 && obstacleGrid[i - 1][0] == 1) ? 1 : 0;
+        }
+
+        // Filling the values for the first row
+        for (int i = 1; i < C; i++) {
+            obstacleGrid[0][i] = (obstacleGrid[0][i] == 0 && obstacleGrid[0][i - 1] == 1) ? 1 : 0;
+        }
+
+        // Starting from cell(1,1) fill up the values
+        // No. of ways of reaching cell[i][j] = cell[i - 1][j] + cell[i][j - 1]
+        // i.e. From above and left.
+        for (int i = 1; i < R; i++) {
+            for (int j = 1; j < C; j++) {
+                if (obstacleGrid[i][j] == 0) {
+                    obstacleGrid[i][j] = obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1];
+                } else {
+                    obstacleGrid[i][j] = 0;
+                }
+            }
+        }
+
+        // Return value stored in rightmost bottommost cell. That is the destination.
+        return obstacleGrid[R - 1][C - 1];
+    }
+}
+```
+
+![image-20210919010337710](D:\leetcode-Team\pictures\image-20210919010337710.png)
 
 ### 64.[ Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum)
 
