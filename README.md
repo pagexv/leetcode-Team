@@ -1867,9 +1867,173 @@ class Solution {
 
 ### 64.[ Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum)
 
+Original thoughts 
+
+- Dynamic programming
+
+
+
+Correct solution
+
+```java
+public class Solution {
+    public int minPathSum(int[][] grid) {
+        for (int i = grid.length - 1; i >= 0; i--) {
+            for (int j = grid[0].length - 1; j >= 0; j--) {
+                if(i == grid.length - 1 && j != grid[0].length - 1)
+                    grid[i][j] = grid[i][j] +  grid[i][j + 1];
+                else if(j == grid[0].length - 1 && i != grid.length - 1)
+                    grid[i][j] = grid[i][j] + grid[i + 1][j];
+                else if(j != grid[0].length - 1 && i != grid.length - 1)
+                    grid[i][j] = grid[i][j] + Math.min(grid[i + 1][j],grid[i][j + 1]);
+            }
+        }
+        return grid[0][0];
+    }
+}
+```
+
+Time O(mn)
+
+Space O(1)
+
 ### 66.[Plus One](https://leetcode.com/problems/plus-one)
 
+Hanfei
+
+Original thoughts (correct)
+
+- using carry 
+
+```java
+class Solution {
+    public int[] plusOne(int[] digits) {
+        int carry = 0;
+        boolean first = true;
+        for(int i = digits.length - 1; i >= 0; i--){
+            int nextDigit = digits[i] + carry;
+            if(first){
+                nextDigit += 1;
+                first = false;
+            }
+            carry = nextDigit /  10 > 0 ? 1 : 0;
+            
+            digits[i] = nextDigit %  10;
+            if(carry == 0)
+                break;
+            
+        }
+        if(carry > 0){
+            int [] result = new int [digits.length + 1];
+            
+            result = Arrays.copyOfRange(digits, 0, digits.length+1);
+            result[0] = 1;
+            return result;
+        }
+        
+        return digits;
+    }
+}
+```
+
+Time O(N)
+
+Space O(N)
+
+Reference solution
+
+```java
+class Solution {
+  public int[] plusOne(int[] digits) {
+    int n = digits.length;
+
+    // move along the input array starting from the end
+    for (int idx = n - 1; idx >= 0; --idx) {
+      // set all the nines at the end of array to zeros
+      if (digits[idx] == 9) {
+        digits[idx] = 0;
+      }
+      // here we have the rightmost not-nine
+      else {
+        // increase this rightmost not-nine by 1
+        digits[idx]++;
+        // and the job is done
+        return digits;
+      }
+    }
+    // we're here because all the digits are nines
+    digits = new int[n + 1];
+    digits[0] = 1;
+    return digits;
+  }
+}
+```
+
+
+
 ### 73.[Set Matrix Zeroes](https://leetcode.com/problems/set-matrix-zeroes)
+
+Hanfei
+
+Original thoughts
+
+- Dynamic programming
+
+```java
+class Solution {
+  public void setZeroes(int[][] matrix) {
+    Boolean isCol = false;
+    int R = matrix.length;
+    int C = matrix[0].length;
+
+    for (int i = 0; i < R; i++) {
+
+      // Since first cell for both first row and first column is the same i.e. matrix[0][0]
+      // We can use an additional variable for either the first row/column.
+      // For this solution we are using an additional variable for the first column
+      // and using matrix[0][0] for the first row.
+      if (matrix[i][0] == 0) {
+        isCol = true;
+      }
+
+      for (int j = 1; j < C; j++) {
+        // If an element is zero, we set the first element of the corresponding row and column to 0
+        if (matrix[i][j] == 0) {
+          matrix[0][j] = 0;
+          matrix[i][0] = 0;
+        }
+      }
+    }
+
+    // Iterate over the array once again and using the first row and first column, update the elements.
+    for (int i = 1; i < R; i++) {
+      for (int j = 1; j < C; j++) {
+        if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+          matrix[i][j] = 0;
+        }
+      }
+    }
+
+    // See if the first row needs to be set to zero as well
+    if (matrix[0][0] == 0) {
+      for (int j = 0; j < C; j++) {
+        matrix[0][j] = 0;
+      }
+    }
+
+    // See if the first column needs to be set to zero as well
+    if (isCol) {
+      for (int i = 0; i < R; i++) {
+        matrix[i][0] = 0;
+      }
+    }
+  }
+}
+```
+
+Time O(MN)
+
+Space O(1)
 
 ### 74.[Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix)
 
