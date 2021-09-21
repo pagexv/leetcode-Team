@@ -1778,7 +1778,7 @@ Simplified solution
 
 > FloorMod example
 >
-> ![image-20210919001632412](D:\leetcode-Team\pictures\image-20210919001632412.png)
+> ![image-20210919001632412](.\pictures\image-20210919001632412.png)
 >
 > 
 
@@ -1863,7 +1863,7 @@ class Solution {
 }
 ```
 
-![image-20210919010337710](D:\leetcode-Team\pictures\image-20210919010337710.png)
+![image-20210919010337710](.\pictures\image-20210919010337710.png)
 
 ### 64.[ Minimum Path Sum](https://leetcode.com/problems/minimum-path-sum)
 
@@ -2037,9 +2037,148 @@ Space O(1)
 
 ### 74.[Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix)
 
+Hanfei
+
+- Original thoughts (correct)
+
+  - Binary search + matrix search
+
+    ```java
+    class Solution {
+        
+        public boolean binarySearch(int nums[], int target){
+            int left = 0;
+            int right = nums.length - 1;
+            
+            while(left <= right){ //notice must be <=, else it wont pass case like signle element, e.g nums = [1]
+                int pivot = (left + right) / 2;
+                if(nums[pivot] == target){
+                    return true;
+                }
+                
+                if(nums[pivot] < target){
+                    left = pivot + 1;
+                } else {
+                    right = pivot - 1;
+                }
+                
+                
+            }
+            
+            return false;
+        }
+        
+        public boolean searchMatrix(int[][] matrix, int target) {
+            
+            for(int i = 0; i < matrix.length ; i++){
+                
+                if(matrix[i][0] <= target && matrix[i][matrix[i].length -1] >= target){
+                    if(binarySearch(matrix[i], target)){
+                    return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+    }
+    ```
+
+    Time: O(logMN)
+
+    Space O(1)
+
 ### 75.[Sort Colors](https://leetcode.com/problems/sort-colors)
 
+Hanfei
+
+Original thoughts
+
+- implement compare sort or other sort
+
+correct solution
+
+-  [Dutch National Flag Problem](https://en.wikipedia.org/wiki/Dutch_national_flag_problem)
+
+```java
+class Solution {
+  /*
+  Dutch National Flag problem solution.
+  */
+  public void sortColors(int[] nums) {
+    // for all idx < i : nums[idx < i] = 0
+    // j is an index of element under consideration
+    int p0 = 0, curr = 0;
+    // for all idx > k : nums[idx > k] = 2
+    int p2 = nums.length - 1;
+
+    int tmp;
+    while (curr <= p2) {
+      if (nums[curr] == 0) {
+        // swap p0-th and curr-th elements
+        // i++ and j++
+        tmp = nums[p0];
+        nums[p0++] = nums[curr];
+        nums[curr++] = tmp;
+      }
+      else if (nums[curr] == 2) {
+        // swap k-th and curr-th elements
+        // p2--
+        tmp = nums[curr];
+        nums[curr] = nums[p2];
+        nums[p2--] = tmp;
+      }
+      else curr++;
+    }
+  }
+}
+```
+
+Time O(N)
+
+Space O(1)
+
 ### 77.[Combinations](https://leetcode.com/problems/combinations)
+
+Hanfei 
+
+Original thoughts
+
+- backtrack
+
+  - iterate through each combinations
+
+    ```java
+    class Solution {
+      List<List<Integer>> output = new LinkedList();
+      int n;
+      int k;
+    
+      public void backtrack(int first, LinkedList<Integer> curr) {
+        // if the combination is done
+        if (curr.size() == k)
+          output.add(new LinkedList(curr));
+    
+        for (int i = first; i < n + 1; ++i) {
+          // add i into the current combination
+          curr.add(i);
+          // use next integers to complete the combination
+          backtrack(i + 1, curr);
+          // backtrack
+          curr.removeLast();
+        }
+      }
+    
+      public List<List<Integer>> combine(int n, int k) {
+        this.n = n;
+        this.k = k;
+        backtrack(1, new LinkedList<Integer>());
+        return output;
+      }
+    }
+    ```
+
+    ![image-20210921020506202](pictures/image-20210921020506202.png)
 
 ### 78.[ Subsets](https://leetcode.com/problems/subsets)
 
