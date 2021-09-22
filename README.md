@@ -2182,13 +2182,269 @@ Original thoughts
 
 ### 78.[ Subsets](https://leetcode.com/problems/subsets)
 
+Hanfei
+
+Original thoughts:
+
+- simple back track
+
+  ```java
+  class Solution {
+      
+      List<List<Integer>> result = new ArrayList<>();
+      
+      public void backTrack(int [] nums, int start, List<Integer> combs){
+          
+          if(combs.size() == nums.length){
+              result.add(new ArrayList<>(combs));
+              return;
+          }
+          
+          result.add(new ArrayList<>(combs));
+          
+          for(int i = start; i < nums.length ; i ++){
+              
+              combs.add(nums[i]);
+              backTrack(nums, i+1, combs);
+              combs.remove(combs.size() - 1);
+          }
+          
+      }
+          
+          
+          
+          
+      public List<List<Integer>> subsets(int[] nums) {
+           backTrack(nums,0, new ArrayList<>());
+          return result;
+      }
+  }
+  ```
+
+  Time: O(N!) traverse all the possible combinations tree
+
+  Space: O(N!) hold all possible combinations
+
+Improved solution (In both time & space)
+
+![image-20210922011119571](pictures/image-20210922011119571.png)
+
+```java
+class Solution {
+  List<List<Integer>> output = new ArrayList();
+  int n, k;
+
+  public void backtrack(int first, ArrayList<Integer> curr, int[] nums) {
+    // if the combination is done
+    if (curr.size() == k) {
+      output.add(new ArrayList(curr));
+      return;
+    }
+    for (int i = first; i < n; ++i) {
+      // add i into the current combination
+      curr.add(nums[i]);
+      // use next integers to complete the combination
+      backtrack(i + 1, curr, nums);
+      // backtrack
+      curr.remove(curr.size() - 1);
+    }
+  }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    n = nums.length;
+    for (k = 0; k < n + 1; ++k) {
+      backtrack(0, new ArrayList<Integer>(), nums);
+    }
+    return output;
+  }
+}
+```
+
+![image-20210922011109480](pictures/image-20210922011109480.png)
+
+Bitwise
+
+```java
+class Solution {
+  public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> output = new ArrayList();
+    int n = nums.length;
+
+    for (int i = (int)Math.pow(2, n); i < (int)Math.pow(2, n + 1); ++i) {
+      // generate bitmask, from 0..00 to 1..11
+      String bitmask = Integer.toBinaryString(i).substring(1);
+
+      // append subset corresponding to that bitmask
+      List<Integer> curr = new ArrayList();
+      for (int j = 0; j < n; ++j) {
+        if (bitmask.charAt(j) == '1') curr.add(nums[j]);
+      }
+      output.add(curr);
+    }
+    return output;
+  }
+}
+```
+
+![image-20210922011309704](pictures/image-20210922011309704.png)
+
 ### 79.[ Word Search](https://leetcode.com/problems/word-search)
+
+Hanfei
+
+Original thoughts:
+
+- back tracking
+
+```java
+class Solution {
+     char[][] board;
+    public boolean backTrack(int row, int col, String word, int start){
+        
+        if(start == word.length()){
+            return true;
+        }
+        
+        if(row >= board.length || col >= board[0].length ||
+          row < 0 || col < 0 || word.charAt(start) != board[row][col] ){
+            return false;
+        }
+        
+        
+        this.board[row][col] = '#';
+        
+        int [] rowOffset = {0,1,0, -1};
+        int [] colOffset = {1,0,-1,0};
+        
+        //additionall setting
+        boolean ret = false;
+        
+        for(int d = 0; d < 4;d++){
+            
+            ret = backTrack(row + rowOffset[d], col + colOffset[d],word,start+1);
+            if(ret)
+                break;
+            
+        }
+        //restore setting
+        this.board[row][col] = word.charAt(start);
+        return ret;
+            
+            
+        
+    }
+    
+    public boolean exist(char[][] board, String word) {
+        this.board = board;
+        
+        for(int i = 0; i < board.length;i++){
+            for(int j = 0; j < board[0].length;j++){
+                if(backTrack(i,j,word,0))
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+}
+```
+
+![image-20210922012935002](pictures/image-20210922012935002.png)
+
+Note the time complexity is 3^L, since the we cannot go back after first choice (marked as #)
 
 ### 80.[Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii)
 
+Hanfei
+
+Original thoughts
+
+- keep a counter and remove duplicate element if necessary
+
+Correct solution
+
+```java
+class Solution {
+    
+    public int[] remElement(int[] arr, int index) {
+        
+        //
+        // Overwrite the element at the given index by 
+        // moving all the elements to the right of the
+        // index, one position to the left.
+        //
+        for (int i = index + 1; i < arr.length; i++) {
+            arr[i - 1] = arr[i];
+        }
+        
+        return arr;
+    }    
+    
+    public int removeDuplicates(int[] nums) {
+        
+        // Initialize the counter and the array index.
+        int i = 1, count = 1, length = nums.length;
+        
+        //
+        // Start from the second element of the array and process
+        // elements one by one.
+        //
+        while (i < length) {
+            
+            //
+            // If the current element is a duplicate, 
+            // increment the count.
+            //
+            if (nums[i] == nums[i - 1]) {
+                
+                count++;
+                
+                //    
+                // If the count is more than 2, this is an unwanted duplicate element
+                // and hence we remove it from the array.
+                //    
+                if (count > 2) {
+                    
+                    this.remElement(nums, i);
+                    
+                    //
+                    // Note that we have to decrement the array index value to
+                    // keep it consistent with the size of the array.
+                    //    
+                    i--;
+                    
+                    //
+                    // Since we have a fixed size array and we can't actually
+                    // remove an element, we reduce the length of the array as
+                    // well.
+                    //
+                    length--;
+                }
+            } else {
+                
+                //
+                // Reset the count since we encountered a different element
+                // than the previous one.
+                //
+                count = 1;
+            }
+                
+            // Move on to the next element in the array
+            i++;
+        }
+            
+        return length;
+    }
+}
+```
+
+Time: O(N^2)
+
+Space O(1)
+
 ### 81 [Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii)
 
-### 88[Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array)
+### 88. [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array)
 
 ## 09-20 ~ 09-26
 
