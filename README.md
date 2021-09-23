@@ -2407,29 +2407,16 @@ class Solution {
                     
                     this.remElement(nums, i);
                     
-                    //
-                    // Note that we have to decrement the array index value to
-                    // keep it consistent with the size of the array.
-                    //    
                     i--;
                     
-                    //
-                    // Since we have a fixed size array and we can't actually
-                    // remove an element, we reduce the length of the array as
-                    // well.
-                    //
+
                     length--;
                 }
             } else {
                 
-                //
-                // Reset the count since we encountered a different element
-                // than the previous one.
-                //
                 count = 1;
             }
-                
-            // Move on to the next element in the array
+      
             i++;
         }
             
@@ -2442,13 +2429,159 @@ Time: O(N^2)
 
 Space O(1)
 
-### 81 [Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii)
+### 81 [Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii) :star:
+
+Hanfei
+
+Original thoughts
+
+- tweak search rotate array 1
+- difficulties: multiple pivot
+
+Correct solution
+
+```java
+class Solution {
+    public boolean search(int[] nums, int target) {
+        int n = nums.length;
+        if (n == 0) return false;
+        int end = n - 1;
+        int start = 0;
+
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+
+            if (nums[mid] == target) {
+                return true;
+            }
+
+            if (!isBinarySearchHelpful(nums, start, nums[mid])) {
+                start++;
+                continue;
+            }
+            // which array does pivot belong to.
+            boolean pivotArray = existsInFirst(nums, start, nums[mid]);
+
+            // which array does target belong to.
+            boolean targetArray = existsInFirst(nums, start, target);
+            if (pivotArray ^ targetArray) { // If pivot and target exist in different sorted arrays, recall that xor is true when both operands are distinct
+                if (pivotArray) {
+                    start = mid + 1; // pivot in the first, target in the second
+                } else {
+                    end = mid - 1; // target in the first, pivot in the second
+                }
+            } else { // If pivot and target exist in same sorted array
+                if (nums[mid] < target) {
+                    start = mid + 1;
+                } else {
+                    end = mid - 1;
+                }
+            }
+        }
+        return false;
+    }
+
+    // returns true if we can reduce the search space in current binary search space
+    private boolean isBinarySearchHelpful(int[] arr, int start, int element) {
+        return arr[start] != element;
+    }
+
+    // returns true if element exists in first array, false if it exists in second
+    private boolean existsInFirst(int[] arr, int start, int element) {
+        return arr[start] <= element;
+    }
+}
+```
+
+Time O(log N)
+
+Space O(1)
 
 ### 88. [Merge Sorted Array](https://leetcode.com/problems/merge-sorted-array)
+
+Hanfei
+
+Original thoughts
+
+-  pointer strategy
+- Blocks: zero values
+
+Correct solution
+
+```java
+class Solution {
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        // Make a copy of the first m elements of nums1.
+        int[] nums1Copy = new int[m];
+        for (int i = 0; i < m; i++) {
+            nums1Copy[i] = nums1[i];
+        }
+
+        // Read pointers for nums1Copy and nums2 respectively.
+        int p1 = 0;
+        int p2 = 0;
+                
+        // Compare elements from nums1Copy and nums2 and write the smallest to nums1.
+        for (int p = 0; p < m + n; p++) {
+            // We also need to ensure that p1 and p2 aren't over the boundaries
+            // of their respective arrays.
+            if (p2 >= n || (p1 < m && nums1Copy[p1] < nums2[p2])) {
+                nums1[p] = nums1Copy[p1++];
+            } else {
+                nums1[p] = nums2[p2++];
+            }
+        }
+    }
+}
+```
+
+Time O(m + n)
+
+Space O(m)
 
 ## 09-20 ~ 09-26
 
 ### 90.[Subsets II](https://leetcode.com/problems/subsets-ii)
+
+Hanfei
+
+Original thoughts
+
+- backtrack
+
+Correct solution
+
+```java
+class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> subsets = new ArrayList<>();
+        List<Integer> currentSubset = new ArrayList<>();
+
+        subsetsWithDupHelper(subsets, currentSubset, nums, 0);
+        return subsets;
+    }
+
+    private void subsetsWithDupHelper(List<List<Integer>> subsets, List<Integer> currentSubset, int[] nums, int index) {
+        // Add the subset formed so far to the subsets list.
+        subsets.add(new ArrayList<>(currentSubset));
+
+        for (int i = index; i < nums.length; i++) {
+            // If the current element is a duplicate, ignore.
+            if (i != index && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            currentSubset.add(nums[i]);
+            subsetsWithDupHelper(subsets, currentSubset, nums, i + 1);
+            currentSubset.remove(currentSubset.size() - 1);
+        }
+    }
+}
+```
+
+Time O(N * 2^n)
+
+Space O(N)
 
 ### 105.[Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal)
 
