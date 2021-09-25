@@ -1704,7 +1704,7 @@ class Solution {
 
 
 
-### 59.[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii)
+### 59.[Spiral Matrix II](https://leetcode.com/problems/spiral-matrix-ii) :star:
 
 Hanfei
 
@@ -1809,7 +1809,7 @@ class Solution {
 
 
 
-### 63.[Unique Paths II](https://leetcode.com/problems/unique-paths-ii)
+### 63.[Unique Paths II](https://leetcode.com/problems/unique-paths-ii) :star:
 
 Hanfei 
 
@@ -2583,17 +2583,258 @@ Time O(N * 2^n)
 
 Space O(N)
 
-### 105.[Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal)
+### 105.[Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal) :star:
 
-### 106.[Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal)
+Hanfei
+
+Thoughts:
+
+Noting
+
+Correct solution
+
+```java
+class Solution {
+    int preorderIndex;
+    Map<Integer, Integer> inorderIndexMap;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        preorderIndex = 0;
+        // build a hashmap to store value -> its index relations
+        inorderIndexMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            inorderIndexMap.put(inorder[i], i);
+        }
+
+        return arrayToTree(preorder, 0, preorder.length - 1);
+    }
+
+    private TreeNode arrayToTree(int[] preorder, int left, int right) {
+        // if there are no elements to construct the tree
+        if (left > right) return null;
+
+        // select the preorder_index element as the root and increment it
+        int rootValue = preorder[preorderIndex++];
+        TreeNode root = new TreeNode(rootValue);
+
+        // build left and right subtree
+        // excluding inorderIndexMap[rootValue] element because it's the root
+        root.left = arrayToTree(preorder, left, inorderIndexMap.get(rootValue) - 1);
+        root.right = arrayToTree(preorder, inorderIndexMap.get(rootValue) + 1, right);
+        return root;
+    }
+}
+```
+
+Time: O(N)
+
+Space: O(N)
+
+
+
+### 106.[Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal) :star:
+
+Hanfei 
+
+No thoughts
+
+```java
+class Solution {
+  int post_idx;
+  int[] postorder;
+  int[] inorder;
+  HashMap<Integer, Integer> idx_map = new HashMap<Integer, Integer>();
+
+  public TreeNode helper(int in_left, int in_right) {
+    // if there is no elements to construct subtrees
+    if (in_left > in_right)
+      return null;
+
+    // pick up post_idx element as a root
+    int root_val = postorder[post_idx];
+    TreeNode root = new TreeNode(root_val);
+
+    // root splits inorder list
+    // into left and right subtrees
+    int index = idx_map.get(root_val);
+
+    // recursion 
+    post_idx--;
+    // build right subtree
+    root.right = helper(index + 1, in_right);
+    // build left subtree
+    root.left = helper(in_left, index - 1);
+    return root;
+  }
+
+  public TreeNode buildTree(int[] inorder, int[] postorder) {
+    this.postorder = postorder;
+    this.inorder = inorder;
+    // start from the last postorder element
+    post_idx = postorder.length - 1;
+
+    // build a hashmap value -> its index
+    int idx = 0;
+    for (Integer val : inorder)
+      idx_map.put(val, idx++);
+    return helper(0, inorder.length - 1);
+  }
+}
+```
+
+
 
 ### 108.[Convert Sorted Array to Binary Search Tree](https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree)
 
-### 118.[Pascal's Triangle](https://leetcode.com/problems/pascals-triangle)
+Hanfei
 
-### 119.[Pascal's Triangle II](https://leetcode.com/problems/pascals-triangle-ii)
+No thoughts:
 
-### 120.[Triangle](https://leetcode.com/problems/triangle)
+Correct solution
+
+```java
+class Solution {
+    int[] nums;
+
+    public TreeNode helper(int left, int right) {
+        if (left > right) return null;
+
+        // always choose left middle node as a root
+        int p = (left + right) / 2;
+
+        // preorder traversal: node -> left -> right
+        TreeNode root = new TreeNode(nums[p]);
+        root.left = helper(left, p - 1);
+        root.right = helper(p + 1, right);
+        return root;
+    }
+
+    public TreeNode sortedArrayToBST(int[] nums) {
+        this.nums = nums;
+        return helper(0, nums.length - 1);
+    }
+}
+```
+
+Time O(N)
+
+Space O(logN)
+
+### 118.[Pascal's Triangle](https://leetcode.com/problems/pascals-triangle) :star:
+
+Hanfei 
+
+No thoughts
+
+Correct solution
+
+```java
+class Solution {
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> triangle = new ArrayList<List<Integer>>();
+
+        // Base case; first row is always [1].
+        triangle.add(new ArrayList<>());
+        triangle.get(0).add(1);
+
+        for (int rowNum = 1; rowNum < numRows; rowNum++) {
+            List<Integer> row = new ArrayList<>();
+            List<Integer> prevRow = triangle.get(rowNum-1);
+
+            // The first row element is always 1.
+            row.add(1);
+
+            // Each triangle element (other than the first and last of each row)
+            // is equal to the sum of the elements above-and-to-the-left and
+            // above-and-to-the-right.
+            for (int j = 1; j < rowNum; j++) {
+                row.add(prevRow.get(j-1) + prevRow.get(j));
+            }
+
+            // The last row element is always 1.
+            row.add(1);
+
+            triangle.add(row);
+        }
+
+        return triangle;
+    }
+}
+```
+
+
+
+### 119.[Pascal's Triangle II](https://leetcode.com/problems/pascals-triangle-ii) :star:
+
+Hanfei
+
+No thoughts
+
+
+
+Combinatorics problem
+
+```java
+class Solution {
+  public List<Integer> getRow(int n) {
+    List<Integer> row =
+        new ArrayList<>() {
+          {
+            add(1);
+          }
+        };
+
+    for (int k = 1; k <= n; k++) {
+      row.add((int) ((row.get(row.size() - 1) * (long) (n - k + 1)) / k));
+    }
+
+    return row;
+  }
+}
+```
+
+Time: O(K^2)
+
+Space: O(k)
+
+### 120.[Triangle](https://leetcode.com/problems/triangle):star:
+
+Hanfei
+
+Thoughts:
+
+DP
+
+```java
+class Solution {
+    
+    private Map<String, Integer> memoTable;
+    private List<List<Integer>> triangle;
+    
+    private int minPath(int row, int col) {
+        String params = row + ":" + col;
+        if (memoTable.containsKey(params)) {
+            return memoTable.get(params);
+        } 
+        int path = triangle.get(row).get(col);
+        if (row < triangle.size() - 1) {
+            path += Math.min(minPath(row + 1, col), minPath(row + 1, col + 1));
+        }
+        memoTable.put(params, path);
+        return path;
+    }
+    
+    public int minimumTotal(List<List<Integer>> triangle) {
+        this.triangle = triangle;
+        memoTable = new HashMap<>();
+        return minPath(0, 0);
+    }
+}
+
+```
+
+Time O(N^2)
+
+Space O(N^2)
 
 ### 121.[Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock)
 
