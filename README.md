@@ -2867,15 +2867,279 @@ Time: O(n)
 
 Space: O(1)
 
-### 122.[Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii)
+### 122.[Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii) :star:
 
-### 128.[Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence)
+Hanfei
 
-### 130.[Surrounded Regions](https://leetcode.com/problems/surrounded-regions)
+Original thoughts
 
-### 134.[Gas Station](https://leetcode.com/problems/gas-station)
+- modified based on first one
+
+
+
+Correct solution
+
+```java
+class Solution {
+    public int maxProfit(int[] prices) {
+        int maxprofit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1])
+                maxprofit += prices[i] - prices[i - 1];
+        }
+        return maxprofit;
+    }
+}
+```
+
+Thoughts after seeing solution:
+
+- translate problem into graph or mathematical meaning, may help solving this
+  - eg in the graph you see how to achieve max profit by holding one stock a time
+
+Time O(n)
+
+Space O(1)
+
+### 128.[Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence) :star:
+
+Hanfei:
+
+Original thoughts
+
+```
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        
+        int previous = -2;
+        int current = -2;
+        
+        int counter = 0;
+        int previousCounter = 0;
+        int maxCounter = 0;
+        for(int i = 0; i < nums.length; i++){
+            if(i+1 < nums.length && nums[i] + 1 == nums[i+1]){
+                counter++;
+            } else {
+                counter = 0;
+            }
+            
+            if(i-1 > -1 && nums[i-1] + 1 == nums[i]){
+                previousCounter++;
+            } else {
+                previousCounter = 0;
+            }
+
+        }
+        
+        return Math.max(previousCounter,counter);
+    }
+}
+```
+
++ use hash set to achieve O(n)
+
+
+
+Correct solution
+
+```java
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> num_set = new HashSet<Integer>();
+        for (int num : nums) {
+            num_set.add(num);
+        }
+
+        int longestStreak = 0;
+
+        for (int num : num_set) {
+            if (!num_set.contains(num-1)) {
+                int currentNum = num;
+                int currentStreak = 1;
+
+                while (num_set.contains(currentNum+1)) {
+                    currentNum += 1;
+                    currentStreak += 1;
+                }
+
+                longestStreak = Math.max(longestStreak, currentStreak);
+            }
+        }
+
+        return longestStreak;
+    }
+}
+```
+
+Time O(n)
+
+Space O(n)
+
+### 130.[Surrounded Regions](https://leetcode.com/problems/surrounded-regions) :star:
+
+Hanfei
+
+Original thoughts:
+
+- loop through board and find O
+- search for surroundings 
+  - return T if no O found
+  - return F if found other O
+
+
+
+Correct solution
+
+```java
+
+public class Solution {
+  protected Integer ROWS = 0;
+  protected Integer COLS = 0;
+
+  public void solve(char[][] board) {
+    if (board == null || board.length == 0) {
+      return;
+    }
+    this.ROWS = board.length;
+    this.COLS = board[0].length;
+
+    List<Pair<Integer, Integer>> borders = new LinkedList<Pair<Integer, Integer>>();
+    // Step 1). construct the list of border cells
+    for (int r = 0; r < this.ROWS; ++r) {
+      borders.add(new Pair(r, 0));
+      borders.add(new Pair(r, this.COLS - 1));
+    }
+    for (int c = 0; c < this.COLS; ++c) {
+      borders.add(new Pair(0, c));
+      borders.add(new Pair(this.ROWS - 1, c));
+    }
+
+    // Step 2). mark the escaped cells
+    for (Pair<Integer, Integer> pair : borders) {
+      this.DFS(board, pair.first, pair.second);
+    }
+
+    // Step 3). flip the cells to their correct final states
+    for (int r = 0; r < this.ROWS; ++r) {
+      for (int c = 0; c < this.COLS; ++c) {
+        if (board[r][c] == 'O')
+          board[r][c] = 'X';
+        if (board[r][c] == 'E')
+          board[r][c] = 'O';
+      }
+    }
+  }
+
+    protected void DFS(char[][] board, int r, int c) {
+    LinkedList<Pair<Integer, Integer>> queue = new LinkedList<Pair<Integer, Integer>>();
+    queue.offer(new Pair<>(r, c));
+
+    while (!queue.isEmpty()) {
+      // pop out the _tail_ element, rather than the head
+      Pair<Integer, Integer> pair = queue.pollLast();
+      int row = pair.first, col = pair.second;
+      if (board[row][col] != 'O')
+        continue;
+
+      board[row][col] = 'E';
+      if (col < this.COLS - 1)
+        queue.offer(new Pair<>(row, col + 1));
+      if (row < this.ROWS - 1)
+        queue.offer(new Pair<>(row + 1, col));
+      if (col > 0)
+        queue.offer(new Pair<>(row, col - 1));
+      if (row > 0)
+        queue.offer(new Pair<>(row - 1, col));
+    }
+  }
+
+}
+
+
+class Pair<U, V> {
+  public U first;
+  public V second;
+
+  public Pair(U first, V second) {
+    this.first = first;
+    this.second = second;
+  }
+}
+
+```
+
+Time & Space = O(n)
+
+### 134.[Gas Station](https://leetcode.com/problems/gas-station) :star:
+
+Hanfei
+
+Original thoughts
+
+- dynamic programming
+
+Correct solution
+
+```java
+class Solution {
+  public int canCompleteCircuit(int[] gas, int[] cost) {
+    int n = gas.length;
+
+    int total_tank = 0;
+    int curr_tank = 0;
+    int starting_station = 0;
+    for (int i = 0; i < n; ++i) {
+      total_tank += gas[i] - cost[i];
+      curr_tank += gas[i] - cost[i];
+      // If one couldn't get here,
+      if (curr_tank < 0) {
+        // Pick up the next station as the starting one.
+        starting_station = i + 1;
+        // Start with an empty tank.
+        curr_tank = 0;
+      }
+    }
+    return total_tank >= 0 ? starting_station : -1;
+  }
+}
+```
+
+Time O(N)
+
+Space O(1)
 
 ### 136.[Single Number](https://leetcode.com/problems/single-number)
+
+Hanfei
+
+Original thoughts
+
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        Map<Integer,Integer> s = new HashMap<>();
+        
+        for(int i = 0; i <  nums.length; i++){
+            if(!s.containsKey(nums[i])){
+                s.put(nums[i],0);
+            } else {
+                s.put(nums[i], s.get(nums[i]) + 1);
+            }
+        }
+        
+        for(int i = 0; i < nums.length; i++){
+            if(s.get(nums[i]) == 0){
+                return nums[i];
+            }
+        }
+        
+        return -1;
+    }
+}
+```
+
+Time & Space = O(n)
 
 ### 137.[ Single Number II](https://leetcode.com/problems/single-number-ii)
 
