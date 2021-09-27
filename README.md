@@ -2838,6 +2838,35 @@ Space O(N^2)
 
 ### 121.[Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock)
 
+Hanfei
+
+Original thoughts
+
+- dynamic programming / greedy
+- brute force
+
+Correct solution
+
+```java
+public class Solution {
+    public int maxProfit(int prices[]) {
+        int minprice = Integer.MAX_VALUE;
+        int maxprofit = 0;
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] < minprice)
+                minprice = prices[i];
+  
+            maxprofit = Math.max( prices[i] - minprice, maxprofit);
+        }
+        return maxprofit;
+    }
+}
+```
+
+Time: O(n)
+
+Space: O(1)
+
 ### 122.[Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii)
 
 ### 128.[Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence)
@@ -2850,3 +2879,42 @@ Space O(N^2)
 
 ### 137.[ Single Number II](https://leetcode.com/problems/single-number-ii)
 
+## 09-27 ~ 10 - 03
+
+### 121.[Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock)
+
+### 122 [Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii)
+
+### 128[Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence)
+
+### 130 [Surrounded Regions](https://leetcode.com/problems/surrounded-regions)
+
+### 134 [Gas Station](https://leetcode.com/problems/gas-station)
+
+### 136 [Single Number](https://leetcode.com/problems/single-number)
+
+### 137 [Single Number II](https://leetcode.com/problems/single-number-ii)
+
+### 150 [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation)
+
+### 152 [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray)
+
+### 153 [Find Minimum in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array)
+
+### 162 [Find Peak Element](https://leetcode.com/problems/find-peak-element)
+
+### 163 [Missing Ranges](https://leetcode.com/problems/missing-ranges)
+
+### 167 [ Two Sum II - Input array is sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted)
+
+### 169 [Majority Element](https://leetcode.com/problems/majority-element)
+
+
+
+## 10-04 ~ 10 - 10
+
+### 189 [ Rotate Array](https://leetcode.com/problems/rotate-array)
+
+### 198 [House Robber](https://leetcode.com/problems/house-robber)
+
+### 200 [ Number of Islands](https://leetcode.com/problems/number-of-islands)
