@@ -4,6 +4,15 @@ Complete 14 leetcode questions weekly, no upper bound.
 
 ## 09-02 ~ 09-05
 Minimum goal (6 questions)
+
+---
+
+Array tagged problem (within 1~200)
+
+---
+
+
+
 ### [15. 3Sum](https://leetcode.com/problems/3sum/)
 Naicheng
 
@@ -3143,42 +3152,368 @@ Time & Space = O(n)
 
 ### 137.[ Single Number II](https://leetcode.com/problems/single-number-ii)
 
+Hanfei
+
+Original thoughts
+
+- Same as single number 1
+
+```java
+class Solution {
+    public int singleNumber(int[] nums) {
+        Map<Integer,Integer> s = new HashMap<>();
+        
+        for(int i = 0; i <  nums.length; i++){
+            if(!s.containsKey(nums[i])){
+                s.put(nums[i],0);
+            } else {
+                s.put(nums[i], s.get(nums[i]) + 1);
+            }
+        }
+        
+        for(int i = 0; i < nums.length; i++){
+            if(s.get(nums[i]) == 0){
+                return nums[i];
+            }
+        }
+        
+        return -1;
+    }
+}
+```
+
+Time & Space = O(n)
+
 ## 09-27 ~ 10 - 03
-
-### 121.[Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock)
-
-### 122 [Best Time to Buy and Sell Stock II](https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii)
-
-### 128[Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence)
-
-### 130 [Surrounded Regions](https://leetcode.com/problems/surrounded-regions)
-
-### 134 [Gas Station](https://leetcode.com/problems/gas-station)
-
-### 136 [Single Number](https://leetcode.com/problems/single-number)
-
-### 137 [Single Number II](https://leetcode.com/problems/single-number-ii)
 
 ### 150 [Evaluate Reverse Polish Notation](https://leetcode.com/problems/evaluate-reverse-polish-notation)
 
+Hanfei
+
+Original thoughts:
+
+- use recursion
+
+  ```java
+  class Solution {
+      
+      String [] operator = {"+", "-", "*", "/"};
+      
+      public int recursion(String [] tokens, int index){
+          if(index == tokens.length){
+              return 
+          }
+          
+          
+          return 
+      }
+      public int evalRPN(String[] tokens) {
+          
+          for(int i = tokens.length - 1; i >= 0; i--){
+              if(tokens)
+          }
+      }
+  }
+  ```
+
+  
+
+Correct solution
+
+- use stack
+
+```java
+class Solution {
+    
+    public int evalRPN(String[] tokens) {
+        
+        Stack<Integer> stack = new Stack<>();
+        
+        for (String token : tokens) {
+            
+            if (!"+-*/".contains(token)) {
+                stack.push(Integer.valueOf(token));
+                continue;
+            }
+            
+            int number2 = stack.pop();
+            int number1 = stack.pop();
+            
+            int result = 0;
+            
+            switch (token) {
+                case "+":
+                    result = number1 + number2;
+                    break;
+                case "-":
+                    result = number1 - number2;
+                    break;
+                case "*":
+                    result = number1 * number2;
+                    break;
+                case "/":
+                    result = number1 / number2;
+                    break;
+            }
+            
+            stack.push(result);
+            
+        }
+        
+        return stack.pop();
+    }
+}
+```
+
+Time & Space = O(n)
+
 ### 152 [Maximum Product Subarray](https://leetcode.com/problems/maximum-product-subarray)
+
+Hanfei
+
+Original thoughts
+
+1. one pass (incorrect)
+
+   ```java
+   class Solution {
+       public int maxProduct(int[] nums) {
+           int max = -1000;
+           int currentMultiple = 1;
+           for(int i = 0; i < nums.length ; i++){
+               currentMultiple *= nums[i];
+               
+               if(max > currentMultiple){
+                   currentMultiple = 1;
+               } else {
+                   max = currentMultiple;
+               }
+               
+           }
+           
+           return max;
+           
+       }
+   }
+   ```
+
+2. back track to explore all possible outcomes
+
+
+
+Correct solution:
+
+Keep a max & min value, since it may turn to positive number
+
+```java
+class Solution {
+    public int maxProduct(int[] nums) {
+        if (nums.length == 0) return 0;
+
+        int max_so_far = nums[0];
+        int min_so_far = nums[0];
+        int result = max_so_far;
+
+        for (int i = 1; i < nums.length; i++) {
+            int curr = nums[i];
+            int temp_max = Math.max(curr, Math.max(max_so_far * curr, min_so_far * curr));
+            min_so_far = Math.min(curr, Math.min(max_so_far * curr, min_so_far * curr));
+
+            max_so_far = temp_max;
+
+            result = Math.max(max_so_far, result);
+        }
+
+        return result;
+    }
+}
+```
+
+Time O(n)
+
+Space O(1)
 
 ### 153 [Find Minimum in Rotated Sorted Array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array)
 
+Hanfei 
+
+Original thoughts:
+
+brute force
+
+
+
+Correct solution
+
+- binary search 
+  - stop when either
+    - nums[mid] > nums[mid + 1]
+    - nums[mid - 1] > nums[mid]
+
+```java
+class Solution {
+  public int findMin(int[] nums) {
+    // If the list has just one element then return that element.
+    if (nums.length == 1) {
+      return nums[0];
+    }
+
+    // initializing left and right pointers.
+    int left = 0, right = nums.length - 1;
+
+    // if the last element is greater than the first element then there is no rotation.
+    // e.g. 1 < 2 < 3 < 4 < 5 < 7. Already sorted array.
+    // Hence the smallest element is first element. A[0]
+    if (nums[right] > nums[0]) {
+      return nums[0];
+    }
+    
+    // Binary search way
+    while (right >= left) {
+      // Find the mid element
+      int mid = left + (right - left) / 2;
+
+      // if the mid element is greater than its next element then mid+1 element is the smallest
+      // This point would be the point of change. From higher to lower value.
+      if (nums[mid] > nums[mid + 1]) {
+        return nums[mid + 1];
+      }
+
+      // if the mid element is lesser than its previous element then mid element is the smallest
+      if (nums[mid - 1] > nums[mid]) {
+        return nums[mid];
+      }
+
+      // if the mid elements value is greater than the 0th element this means
+      // the least value is still somewhere to the right as we are still dealing with elements
+      // greater than nums[0]
+      if (nums[mid] > nums[0]) {
+        left = mid + 1;
+      } else {
+        // if nums[0] is greater than the mid value then this means the smallest value is somewhere to
+        // the left
+        right = mid - 1;
+      }
+    }
+    return -1;
+  }
+}
+```
+
+Time O(logN)
+
+Space O(1)
+
 ### 162 [Find Peak Element](https://leetcode.com/problems/find-peak-element)
 
+Hanfei
+
+Original thoughts
+
+- Could apply binary search 
+- Recall stock price problem
+
+
+
+Correct solution
+
+```java
+public class Solution {
+    public int findPeakElement(int[] nums) {
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (nums[i] > nums[i + 1])
+                return i;
+        }
+        return nums.length - 1;
+    }
+}
+```
+
+Time O(n)
+
+Space O(1)
+
 ### 163 [Missing Ranges](https://leetcode.com/problems/missing-ranges)
+
+Hanfei
+
+Original thoughts
+
+- interval search
+
+
+
+Correct solution
+
+- linear visualize solution
+
+```java
+class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> result = new ArrayList<>();
+        int prev = lower - 1;
+        for (int i = 0; i <= nums.length; i++) {
+            int curr = (i < nums.length) ? nums[i] : upper + 1;
+            if (prev + 1 <= curr - 1) {
+                result.add(formatRange(prev + 1, curr - 1));
+            }
+            prev = curr;
+        }
+        return result;
+    }
+
+    // formats range in the requested format
+    private String formatRange(int lower, int upper) {
+        if (lower == upper) {
+            return String.valueOf(lower);
+        }
+        return lower + "->" + upper;
+    }
+}
+
+```
+
+Time O(N)
+
+Space O(1)
 
 ### 167 [ Two Sum II - Input array is sorted](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted)
 
 ### 169 [Majority Element](https://leetcode.com/problems/majority-element)
-
-
-
-## 10-04 ~ 10 - 10
 
 ### 189 [ Rotate Array](https://leetcode.com/problems/rotate-array)
 
 ### 198 [House Robber](https://leetcode.com/problems/house-robber)
 
 ### 200 [ Number of Islands](https://leetcode.com/problems/number-of-islands)
+
+
+
+
+
+----
+
+String tagged problem (within 1~200)
+
+---
+
+
+
+### 6.[ZigZag Conversion](https://leetcode.com/problems/zigzag-conversion)
+
+### 8.[String to Integer (atoi)](https://leetcode.com/problems/string-to-integer-atoi)
+
+### 12.[Integer to Roman](https://leetcode.com/problems/integer-to-roman)
+
+### 13.[Roman to Integer](https://leetcode.com/problems/roman-to-integer)
+
+
+
+
+
+## 10-04 ~ 10 - 10
+
+### 14.[Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix)
+
+17.[Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number)
+
