@@ -3786,9 +3786,118 @@ String tagged problem (within 1~200)
 
 ### 6.[ZigZag Conversion](https://leetcode.com/problems/zigzag-conversion)
 
+Hanfei
+
+Original thoughts: matrix
+
+Correct solution:
+
+- control going up / down
+- Create array of string builder
+
+```java
+class Solution {
+    public String convert(String s, int numRows) {
+
+        if (numRows == 1) return s;
+
+        List<StringBuilder> rows = new ArrayList<>();
+        for (int i = 0; i < Math.min(numRows, s.length()); i++)
+            rows.add(new StringBuilder());
+
+        int curRow = 0;
+        boolean goingDown = false;
+
+        for (char c : s.toCharArray()) {
+            rows.get(curRow).append(c);
+            if (curRow == 0 || curRow == numRows - 1) goingDown = !goingDown;
+            curRow += goingDown ? 1 : -1;
+        }
+
+        StringBuilder ret = new StringBuilder();
+        for (StringBuilder row : rows) ret.append(row);
+        return ret.toString();
+    }
+}
+```
+
+Time Space = O(n)
+
 ### 8.[String to Integer (atoi)](https://leetcode.com/problems/string-to-integer-atoi)
 
+Hanfei
+
+Original thoughts: create a string and discard all unnecessary char and do Integer.parse()
+
+Correct solution
+
+```java
+    public int myAtoi(String s) {
+        long num = 0;
+        boolean neg = false;
+        int sign = 0;
+        
+        for(int i=0; i<s.length(); i++) {
+                        
+            if(s.charAt(i) == ' ' && sign == 0) {
+                continue;
+            }
+            else if(s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                num = num*10 + (s.charAt(i) - '0'); //core function
+                sign = 1;
+                
+                 if(num > Integer.MAX_VALUE) 
+                    return neg ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+            }
+            else if(s.charAt(i) == '+' && sign == 0) {
+                neg = false;
+                sign = 1;
+            }
+            else if(s.charAt(i) == '-' && sign == 0) {
+                neg = true;
+                sign = 1;
+            }
+            else 
+                break;
+        }
+        
+        return neg ? -(int)num : (int)num;
+    }
+```
+
+Time: O(n)
+
+Space O(1)
+
 ### 12.[Integer to Roman](https://leetcode.com/problems/integer-to-roman)
+
+Hanfei
+
+Original thoughts: start from highest number and generate symbol (greedy)
+
+Correct solution
+
+```java
+class Solution {
+    private static final int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};    
+    private static final String[] symbols = {"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
+
+    public String intToRoman(int num) {
+        StringBuilder sb = new StringBuilder();
+        // Loop through each symbol, stopping if num becomes 0.
+        for (int i = 0; i < values.length && num > 0; i++) {
+            // Repeat while the current symbol still fits into num.
+            while (values[i] <= num) {
+                num -= values[i];
+                sb.append(symbols[i]);
+            }
+        }
+        return sb.toString();
+    }
+}
+```
+
+Time & Space O(1)
 
 ### 13.[Roman to Integer](https://leetcode.com/problems/roman-to-integer)
 
