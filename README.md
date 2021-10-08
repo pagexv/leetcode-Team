@@ -3901,13 +3901,138 @@ Time & Space O(1)
 
 ### 13.[Roman to Integer](https://leetcode.com/problems/roman-to-integer)
 
+Hanfei Original thoughts
 
+one time pass
 
+```java
+class Solution {
+    
+    static Map<Character, Integer> values = new HashMap<>();
+    
+    static {
+        values.put('M', 1000);
+        values.put('D', 500);
+        values.put('C', 100);
+        values.put('L', 50);
+        values.put('X', 10);
+        values.put('V', 5);
+        values.put('I', 1);
+    }
+    
+    public int romanToInt(String s) {
+        
+        
+        
+        int num = 0;
+        Character prev = null;
+        for(int i = 0; i < s.length(); i++){
+            
+            if(prev != null && values.get(s.charAt(i)) > values.get(prev)){
+                num +=  values.get(s.charAt(i)) - 2 * values.get(prev) ;
+            } else {
+                num += values.get(s.charAt(i));
+            }
+            
+            
+            
+            prev = s.charAt(i);
+        }
+        
+        return num;
+    }
+}
+```
 
+Time O(N) Space O(1)
 
 ## 10-04 ~ 10 - 10
 
-### 14.[Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix)
+### 14.[Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix) :star:
+
+Hanfei Original thoughts: None
+
+Correct solution:
+
+```java
+ public String longestCommonPrefix(String[] strs) {
+    if (strs.length == 0) return "";
+    String prefix = strs[0];
+    for (int i = 1; i < strs.length; i++)
+        while (strs[i].indexOf(prefix) != 0) {
+            prefix = prefix.substring(0, prefix.length() - 1);
+            if (prefix.isEmpty()) return "";
+        }        
+    return prefix;
+}
+```
+
+Time O(S) Space O(1)
 
 ### 17.[Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number)
 
+Hanfei Original thoughts: brute force, back track
+
+Correct solution:
+
+```
+class Solution {
+    private static final String[] KEYPAD = {null, null, "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+public List<String> letterCombinations(String digits) {
+	var combinations = new ArrayList<String>();
+	if (digits.isEmpty())
+		return combinations;
+	letterCombinations(digits, combinations, 0, new StringBuilder());
+	return combinations;
+}
+
+private void letterCombinations(String digits, List<String> combinations, int i, StringBuilder combination) {
+	if (i == digits.length()) {
+		combinations.add(combination.toString());
+	} else {
+		var letters = KEYPAD[digits.charAt(i) - '0'];
+		var length = combination.length();
+		// for each choice
+		for (var j = 0; j < letters.length(); j++) {
+			// choose
+			combination.append(letters.charAt(j));
+			// explore
+			letterCombinations(digits, combinations, i + 1, combination);
+			// unchoose
+			combination.setLength(length);
+		}
+	}
+}
+
+}
+```
+
+Time O(n^4) Space O(n)
+
+### 20.[Valid Parentheses](https://leetcode.com/problems/valid-parentheses)
+
+### 22.[Generate Parentheses](https://leetcode.com/problems/generate-parentheses)
+
+### 28.[Implement strStr()](https://leetcode.com/problems/implement-strstr)
+
+### 38.[Count and Say](https://leetcode.com/problems/count-and-say)
+
+### 43.[ Multiply Strings](https://leetcode.com/problems/multiply-strings)
+
+### 49.[Group Anagrams](https://leetcode.com/problems/group-anagrams)
+
+### 58.[Length of Last Word](https://leetcode.com/problems/length-of-last-word)
+
+### 67.[Add Binary](https://leetcode.com/problems/add-binary)
+
+### 71.[Simplify Path](https://leetcode.com/problems/simplify-path)
+
+### 91.[ Decode Ways](https://leetcode.com/problems/decode-ways)
+
+### 93.[Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses)
+
+### 97.[ Interleaving String](https://leetcode.com/problems/interleaving-string)
+
+
+
+10-11 ~ 10-17
