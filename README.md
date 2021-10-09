@@ -4011,9 +4011,200 @@ Time O(n^4) Space O(n)
 
 ### 20.[Valid Parentheses](https://leetcode.com/problems/valid-parentheses)
 
-### 22.[Generate Parentheses](https://leetcode.com/problems/generate-parentheses)
+Hanfei Original thoughts: stack
 
-### 28.[Implement strStr()](https://leetcode.com/problems/implement-strstr)
+```java
+class Solution {
+    
+    private HashMap<Character, Character> mappings;
+
+  // Initialize hash map with mappings. This simply makes the code easier to read.
+  public Solution() {
+    this.mappings = new HashMap<Character, Character>();
+    this.mappings.put(')', '(');
+    this.mappings.put('}', '{');
+    this.mappings.put(']', '[');
+  }
+    
+    
+    
+    public boolean isValid(String s) {
+        
+        Stack<Character> stack = new Stack<Character>();
+        for(int i = 0; i < s.length();i++){
+            if(stack.isEmpty()){
+                stack.push(s.charAt(i));
+                continue;
+            }
+            if(mappings.containsKey(s.charAt(i))){
+                Character c = stack.peek();
+                
+                if(Objects.equals(c, mappings.get(s.charAt(i)))){
+                    stack.pop();
+                } else {
+                    stack.push(s.charAt(i));
+                }
+                
+            } else {
+                stack.push(s.charAt(i));
+            }
+            
+            
+        }
+        
+        
+        return stack.isEmpty();
+    }
+}
+```
+
+Time: O(n)
+
+Space: O(1)
+
+### 22.[Generate Parentheses](https://leetcode.com/problems/generate-parentheses) :star:
+
+Hanfei Original thoughts: back track
+
+Correct Solution:
+
+```java
+class Solution {
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList();
+        backtrack(ans, new StringBuilder(), 0, 0, n);
+        return ans;
+    }
+
+    public void backtrack(List<String> ans, StringBuilder cur, int open, int close, int max){
+        if (cur.length() == max * 2) {
+            ans.add(cur.toString());
+            return;
+        }
+
+        if (open < max) {
+            cur.append("(");
+            backtrack(ans, cur, open+1, close, max);
+            cur.deleteCharAt(cur.length() - 1);
+        }
+        if (close < open) {
+            cur.append(")");
+            backtrack(ans, cur, open, close+1, max);
+            cur.deleteCharAt(cur.length() - 1);
+        }
+    }
+}
+```
+
+![image-20211008234853395](pictures/image-20211008234853395.png)
+
+### 28.[Implement strStr()](https://leetcode.com/problems/implement-strstr) :star:
+
+Hanfei Original thoughts: no
+
+Correct solution:
+
+KMP baed algorithm
+
+```java
+ public int strStr(String txt, String pat) {
+        if (pat.length() == 0) {
+            return 0;  // return 0 because no pattern to search
+        }
+        
+        int[] lps = computeLPS(pat); // compute LPS array
+        
+        int i = 0;
+        int j = 0;
+        while (i < txt.length()) { // loop till text length
+            if (txt.charAt(i) == pat.charAt(j)) { // if pattern char matches with text char
+                j++;
+                i++;
+                if (j == pat.length()) { // if pattern length equals to j means we have found one pattern
+                    return (i-j);  // index of pattern will be i-j beacause i is at last index of matched pattern 
+                }
+            } else {
+                if (j != 0) {
+                    j = lps[j-1]; // try for longest pattern
+                } else {
+                    i++; // ignore and loop to next char
+                } 
+            }
+            
+            
+        }
+        return -1; // no match found
+    }
+    
+    private int[] computeLPS(String a) {
+        int i = 1;
+        int j = 0;
+        
+        int arr[] = new int[a.length()];
+        
+        while (i < a.length()) {
+            if (a.charAt(i) == a.charAt(j)) {
+                arr[i++] = ++j;
+            } else {
+                if (j != 0) {
+                    j = arr[j-1];
+                } else { 
+                    i++;
+                }
+            }
+        }
+        return arr;
+    }
+```
+
+Time O(N) Space O(1)
+
+https://zh.wikipedia.org/wiki/KMP%E7%AE%97%E6%B3%95
+
+solution 2
+
+```java
+class Solution {
+public int strStr(String f1, String f2) {
+int a=f1.length();
+int b=f2.length();
+if(b==0)
+return 0;
+for(int i=0;i<a && (i+b)<=a;i+=1)
+{
+if(f2.equals(f1.substring(i,i+b)))
+{
+return i;
+}
+}
+return -1;
+}
+}
+```
+
+Time: O(n^2), Space O(1)
+
+The old version substring takes O(1), but new version takes O(n)
+
+solution 3
+
+Java string builder 
+
+```java
+class Solution {
+    public int strStr(String haystack, String needle) {
+        if(haystack.equals(needle))
+        {
+            return 0;
+        }
+        StringBuilder sb = new StringBuilder(haystack);
+        
+        return sb.indexOf(needle);
+    }
+}
+```
+
+
 
 ### 38.[Count and Say](https://leetcode.com/problems/count-and-say)
 
