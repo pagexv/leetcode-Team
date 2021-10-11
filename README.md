@@ -3784,7 +3784,7 @@ String tagged problem (within 1~200)
 
 
 
-### 6.[ZigZag Conversion](https://leetcode.com/problems/zigzag-conversion)
+### 6.[ZigZag Conversion](https://leetcode.com/problems/zigzag-conversion) :star:
 
 Hanfei
 
@@ -4206,11 +4206,222 @@ class Solution {
 
 
 
-### 38.[Count and Say](https://leetcode.com/problems/count-and-say)
+### 38.[Count and Say](https://leetcode.com/problems/count-and-say) :star2: :star:
 
-### 43.[ Multiply Strings](https://leetcode.com/problems/multiply-strings)
+Hanfei Original thoughts: None
+
+Correct solution
+
+- Dynamic programming
+
+```java
+public String countAndSay(int n) {
+    String[] dynamicArray = new String[n];
+
+    dynamicArray[0] = "1";
+    for(int i = 1; i < n; i++) {
+        dynamicArray[i] = splitDigitString(dynamicArray[i-1]);
+    }
+
+    return dynamicArray[n-1];
+}
+
+public String splitDigitString(String digitString) {
+    int i = 1;
+    StringBuilder ans = new StringBuilder();
+    char prev = digitString.charAt(0);
+    char curr;
+    int count = 1;
+
+    while(true) {
+
+        if(i >= digitString.length()) {
+            ans.append(count);
+            ans.append(prev);
+            break;
+        }
+
+        curr = digitString.charAt(i);
+
+        if(curr == prev) {
+            count++;
+        } else {
+            ans.append(count);
+            ans.append(prev);
+            count = 1;
+            prev = curr;
+        }
+
+        i++;
+    }
+
+    return ans.toString();
+}
+```
+
+Time O(N^2)![image-20211011003948036](pictures/image-20211011003948036.png)
+
+Space O(N)
+
+
+
+Improved solution
+
+```java
+class Solution {
+private StringBuilder sb = new StringBuilder();
+
+public String countAndSay(int n) {
+    if(n==1) return "1";
+	String str = "11";
+    for (int i = 2; i<n; i++) {
+      str = process(str);  
+    }
+    return str;
+ }
+ 
+
+
+private String process(String str){
+	 this.sb.setLength(0);
+     char[] seq = str.toCharArray();
+     char lastchar = seq[0];
+     int counter = 1;
+     for(int i=1; i<seq.length; i++){
+    	 char current = seq[i];
+    	 if (current == lastchar){
+    		 counter++;
+    	 } else {
+    		 this.sb.append(counter).append(lastchar);
+    		 lastchar = current;
+    		 counter = 1;
+    	 }
+     }
+     this.sb.append(counter).append(lastchar);
+     return sb.toString();
+}
+}
+
+
+```
+
+Time O(N)
+
+Space O(N)
+
+### 43.[ Multiply Strings](https://leetcode.com/problems/multiply-strings) :star:
+
+Hanfei Original thoughts: 
+
+Covert to int linked list => compute result with carry
+
+Deficiency: multiple level of intermediate result
+
+Correct solution:
+
+```java
+class Solution {
+    public String multiply(String num1, String num2) {
+        if (num1.equals("0") || num2.equals("0")) {
+            return "0";
+        }
+        
+        StringBuilder firstNumber = new StringBuilder(num1);
+        StringBuilder secondNumber = new StringBuilder(num2);
+        
+        // Reverse both the numbers.
+        firstNumber.reverse();
+        secondNumber.reverse();
+        
+        // To store the multiplication result of each digit of secondNumber with firstNumber.
+        int N = firstNumber.length() + secondNumber.length();
+        StringBuilder answer = new StringBuilder();
+        for (int i = 0; i < N; ++i) {
+            answer.append(0);
+        }
+        
+        for (int place2 = 0; place2 < secondNumber.length(); place2++) {
+            int digit2 = secondNumber.charAt(place2) - '0';
+            
+            // For each digit in secondNumber multiply the digit by all digits in firstNumber.
+            for (int place1 = 0; place1 < firstNumber.length(); place1++) {
+                int digit1 = firstNumber.charAt(place1) - '0';
+                
+                // The number of zeros from multiplying to digits depends on the 
+                // place of digit2 in secondNumber and the place of the digit1 in firstNumber.
+                int currentPos = place1 + place2;
+                
+                // The digit currently at position currentPos in the answer string
+                // is carried over and summed with the current result.
+                int carry = answer.charAt(currentPos) - '0';
+                int multiplication = digit1 * digit2 + carry;
+                
+                // Set the ones place of the multiplication result.
+                answer.setCharAt(currentPos, (char)(multiplication % 10 + '0'));
+                
+                // Carry the tens place of the multiplication result by 
+                // adding it to the next position in the answer array.
+                int value = (answer.charAt(currentPos + 1) - '0') + multiplication / 10;
+                answer.setCharAt(currentPos + 1, (char)(value + '0'));
+            }
+        }
+        
+        // Pop excess 0 from the rear of answer.
+        if (answer.charAt(answer.length() - 1) == '0') {
+            answer.deleteCharAt(answer.length() - 1);
+        }
+        
+        answer.reverse();
+        return answer.toString();
+    }
+}
+```
+
+Time O(M * N)
+
+Space O(M + N)
 
 ### 49.[Group Anagrams](https://leetcode.com/problems/group-anagrams)
+
+Hanfei Original thoughts:
+
+sort each string => put in map => iterate each string and group together
+
+O(N kLogk)
+
+
+
+Improved solution:
+
+encode string
+
+![image-20211011005845325](pictures/image-20211011005845325.png)
+
+```java
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        if (strs.length == 0) return new ArrayList();
+        Map<String, List> ans = new HashMap<String, List>();
+        int[] count = new int[26];
+        for (String s : strs) {
+            Arrays.fill(count, 0);
+            for (char c : s.toCharArray()) count[c - 'a']++;
+
+            StringBuilder sb = new StringBuilder("");
+            for (int i = 0; i < 26; i++) {
+                sb.append('#');
+                sb.append(count[i]);
+            }
+            String key = sb.toString();
+            if (!ans.containsKey(key)) ans.put(key, new ArrayList());
+            ans.get(key).add(s);
+        }
+        return new ArrayList(ans.values());
+    }
+}
+```
+
+Time O(NK) Space O(NK)
 
 ### 58.[Length of Last Word](https://leetcode.com/problems/length-of-last-word)
 
@@ -4226,4 +4437,4 @@ class Solution {
 
 
 
-10-11 ~ 10-17
+## 10-11 ~ 10-17
