@@ -2592,7 +2592,7 @@ Time O(N * 2^n)
 
 Space O(N)
 
-### 105.[Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal) :star:
+### 105.[Construct Binary Tree from Preorder and Inorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal) :star::star::star:
 
 Hanfei
 
@@ -2640,7 +2640,7 @@ Space: O(N)
 
 
 
-### 106.[Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal) :star:
+### 106.[Construct Binary Tree from Inorder and Postorder Traversal](https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal) :star::star::star:
 
 Hanfei 
 
@@ -3948,7 +3948,7 @@ Time O(N) Space O(1)
 
 ## 10-04 ~ 10 - 10
 
-### 14.[Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix) :star:
+### 14.[Longest Common Prefix](https://leetcode.com/problems/longest-common-prefix) :star::star:
 
 Hanfei Original thoughts: None
 
@@ -4062,7 +4062,7 @@ Time: O(n)
 
 Space: O(1)
 
-### 22.[Generate Parentheses](https://leetcode.com/problems/generate-parentheses) :star:
+### 22.[Generate Parentheses](https://leetcode.com/problems/generate-parentheses) :star::star:
 
 Hanfei Original thoughts: back track
 
@@ -4098,7 +4098,7 @@ class Solution {
 
 ![image-20211008234853395](pictures/image-20211008234853395.png)
 
-### 28.[Implement strStr()](https://leetcode.com/problems/implement-strstr) :star:
+### 28.[Implement strStr()](https://leetcode.com/problems/implement-strstr) :star::star:
 
 Hanfei Original thoughts: no
 
@@ -4206,7 +4206,7 @@ class Solution {
 
 
 
-### 38.[Count and Say](https://leetcode.com/problems/count-and-say) :star2: :star:
+### 38.[Count and Say](https://leetcode.com/problems/count-and-say) :star2: :star::star:
 
 Hanfei Original thoughts: None
 
@@ -4309,7 +4309,7 @@ Time O(N)
 
 Space O(N)
 
-### 43.[ Multiply Strings](https://leetcode.com/problems/multiply-strings) :star:
+### 43.[ Multiply Strings](https://leetcode.com/problems/multiply-strings) :star::star:
 
 Hanfei Original thoughts: 
 
@@ -4381,7 +4381,7 @@ Time O(M * N)
 
 Space O(M + N)
 
-### 49.[Group Anagrams](https://leetcode.com/problems/group-anagrams) :star:
+### 49.[Group Anagrams](https://leetcode.com/problems/group-anagrams) :star::star:
 
 Hanfei Original thoughts:
 
