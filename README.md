@@ -4381,7 +4381,7 @@ Time O(M * N)
 
 Space O(M + N)
 
-### 49.[Group Anagrams](https://leetcode.com/problems/group-anagrams)
+### 49.[Group Anagrams](https://leetcode.com/problems/group-anagrams) :star:
 
 Hanfei Original thoughts:
 
@@ -4425,9 +4425,117 @@ Time O(NK) Space O(NK)
 
 ### 58.[Length of Last Word](https://leetcode.com/problems/length-of-last-word)
 
+Hanfei Original thoughts: String function split
+
+```java
+class Solution {
+    public int lengthOfLastWord(String s) {
+        String [] arr = s.split(" ");
+        
+        return arr[arr.length - 1].length();
+    }
+}
+```
+
+Time O(N), Space O(N)
+
+one pass solution:
+
+```
+class Solution {
+    public int lengthOfLastWord(String s) {
+        int p = s.length(), length = 0;
+        while (p > 0) {
+            p--;
+            // we're in the middle of the last word
+            if (s.charAt(p) != ' ') {
+                length++;
+            }
+            // here is the end of last word
+            else if (length > 0) {
+                return length;
+            }
+        }
+        return length;
+  }
+}
+```
+
+Time: O(N) Space O(1)
+
 ### 67.[Add Binary](https://leetcode.com/problems/add-binary)
 
-### 71.[Simplify Path](https://leetcode.com/problems/simplify-path)
+Hanfei Original thoughts: convert to list sum problem
+
+```java
+class Solution {
+    public String addBinary(String a, String b) {
+        StringBuilder sb = new StringBuilder();
+        int i = a.length() - 1, j = b.length() -1, carry = 0;
+        while (i >= 0 || j >= 0) {
+            int sum = carry;
+            if (j >= 0) sum += b.charAt(j--) - '0';
+            if (i >= 0) sum += a.charAt(i--) - '0';
+            sb.append(sum % 2);
+            carry = sum / 2;
+        }
+        if (carry != 0) sb.append(carry);
+        return sb.reverse().toString();
+    }
+}
+```
+
+Time Space O(N)
+
+### 71.[Simplify Path](https://leetcode.com/problems/simplify-path) :star_and_crescent :star:(half) ​
+
+Hanfei Original thoughts: using stack
+
+Correct solution:
+
+```java
+class Solution {
+    public String simplifyPath(String path) {
+
+        // Initialize a stack
+        Stack<String> stack = new Stack<String>();
+        String[] components = path.split("/");
+
+        // Split the input string on "/" as the delimiter
+        // and process each portion one by one
+        for (String directory : components) {
+
+            // A no-op for a "." or an empty string
+            if (directory.equals(".") || directory.isEmpty()) {
+                continue;
+            } else if (directory.equals("..")) {
+
+                // If the current component is a "..", then
+                // we pop an entry from the stack if it's non-empty
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else {
+
+                // Finally, a legitimate directory name, so we add it
+                // to our stack
+                stack.add(directory);
+            }
+        }
+
+        // Stich together all the directory names together
+        StringBuilder result = new StringBuilder();
+        for (String dir : stack) {
+            result.append("/");
+            result.append(dir);
+        }
+
+        return result.length() > 0 ? result.toString() : "/" ;
+    }
+}
+```
+
+Time & Space = O(N)
 
 ### 91.[ Decode Ways](https://leetcode.com/problems/decode-ways)
 
