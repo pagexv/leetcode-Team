@@ -4537,12 +4537,176 @@ class Solution {
 
 Time & Space = O(N)
 
-### 91.[ Decode Ways](https://leetcode.com/problems/decode-ways)
+### 91.[ Decode Ways](https://leetcode.com/problems/decode-ways) :star: :star:
 
-### 93.[Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses)
+Hanfei Original thoughts: sliding window / DP
 
-### 97.[ Interleaving String](https://leetcode.com/problems/interleaving-string)
+> Links to DP: https://www.youtube.com/watch?v=vYquumk4nWw
+
+Correct solution (Good DP problem)
+
+```java
+class Solution {
+
+    public int numDecodings(String s) {
+        // DP array to store the subproblem results
+        int[] dp = new int[s.length() + 1];
+        dp[0] = 1;
+        
+        // Ways to decode a string of size 1 is 1. Unless the string is '0'.
+        // '0' doesn't have a single digit decode.
+        dp[1] = s.charAt(0) == '0' ? 0 : 1;
+
+        for(int i = 2; i < dp.length; i++) {
+            // Check if successful single digit decode is possible.
+            if (s.charAt(i - 1) != '0') {
+               dp[i] = dp[i - 1];  
+            }
+            
+            // Check if successful two digit decode is possible.
+            int twoDigit = Integer.valueOf(s.substring(i - 2, i));
+            if (twoDigit >= 10 && twoDigit <= 26) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        
+        return dp[s.length()];
+    }
+}
+```
+
+Time & Space = O(N)
+
+Improved solution:
 
 
+
+```java
+   class Solution {
+    public int numDecodings(String s) {  
+        if (s.charAt(0) == '0') {
+            return 0;
+        }
+    int n = s.length();
+    int twoBack = 1;
+    int oneBack = 1;
+    for (int i = 1; i < n; i++) {
+        int current = 0;
+        if (s.charAt(i) != '0') {
+            current = oneBack;
+        }
+        int twoDigit = Integer.parseInt(s.substring(i - 1, i + 1));
+        if (twoDigit >= 10 && twoDigit <= 26) {
+            current += twoBack;
+        }
+       
+        twoBack = oneBack;
+        oneBack = current;
+    }
+    return oneBack;
+}
+}
+```
+Time = O(N)
+
+Space = O(1)
+
+### 93.[Restore IP Addresses](https://leetcode.com/problems/restore-ip-addresses) :star::star: ​
+
+Hanfei original thoughts: Looks like a backtrack problem
+
+Correct solution
+
+```java
+class Solution {
+    List<String> res = new ArrayList<>();
+public List<String> restoreIpAddresses(String s) {
+	backtrack(0, 0, new StringBuilder(), s);
+	return res;
+}
+
+private void backtrack(int count, int curIndex, StringBuilder sb, String s) {
+	if(count == 4 && curIndex == s.length()) {
+		res.add(sb.toString());
+		return;
+	} else if(count == 4) {
+		return;
+	}
+
+	// Assuming IP address is potentially 3 length string
+	for(int i=1; i<=3; i++) {
+		// If current index is overflowed length of s string
+		if(curIndex + i > s.length()) {
+			continue;
+		}
+		String candidate = s.substring(curIndex, curIndex + i);
+		// Validating if IP address candidate is any string 0 to 255 properly
+		if(!valid(candidate)) {
+			continue;
+		}
+
+		if(sb.length() > 0) {
+			sb.append(".");
+		}
+		sb.append(candidate);
+
+		backtrack(count + 1, curIndex + i, sb, s);
+
+		// Remove last added string of candidate IP address
+		for(int j=0; j<candidate.length(); j++){
+			sb.deleteCharAt(sb.length()-1);
+		}
+		if(sb.length() > 0) {
+			sb.deleteCharAt(sb.length()-1);
+		}
+	}
+}
+
+public boolean valid(String segment) {
+	int m = segment.length();
+	if (m > 3)
+	  return false;
+	return (segment.charAt(0) != '0') ? (Integer.valueOf(segment) <= 255) : (m == 1);
+}
+}
+```
+
+- Time complexity : as discussed above, there is not more than `27` combinations to check.
+- Space complexity : constant space to keep the solutions, not more than `19` valid IP addresses.
+
+### 97.[ Interleaving String](https://leetcode.com/problems/interleaving-string) :star::star: :star:
+
+
+
+Correct solution: (DP)
+
+```java
+public class Solution {
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s3.length() != s1.length() + s2.length()) {
+            return false;
+        }
+        boolean dp[] = new boolean[s2.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0 && j == 0) {
+                    dp[j] = true;
+                } else if (i == 0) {
+                    dp[j] = dp[j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1);
+                } else if (j == 0) {
+                    dp[j] = dp[j] && s1.charAt(i - 1) == s3.charAt(i + j - 1);
+                } else {
+                    dp[j] = (dp[j] && s1.charAt(i - 1) == s3.charAt(i + j - 1)) || (dp[j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1));
+                }
+            }
+        }
+        return dp[s2.length()];
+    }
+}
+```
+
+Time O(m * n)
+
+Space O(n)
 
 ## 10-11 ~ 10-17
