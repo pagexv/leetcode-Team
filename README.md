@@ -3,6 +3,7 @@
 Complete 14 leetcode questions weekly, no upper bound.
 
 ## 09-02 ~ 09-05
+
 Minimum goal (6 questions)
 
 ---
@@ -14,19 +15,22 @@ Array tagged problem (within 1~200)
 
 
 ### [15. 3Sum](https://leetcode.com/problems/3sum/)
+
 Naicheng
 
 分析：
+
 1. 考虑特解，长度小于三。
 2. 给list排序,是为了使用双指针法。
 3. 之后用双指针法，首先做一个循环，如果当前循环`nums[i]`的数值大于0，就可以直接返回已有结果（这是一个排序的目的）
 4. 确定两个指针，`left = nums[i + 1]` ，`right = nums[n]`,
-	- if sum > 0, right is too big then we move the right to left
-	- if sum < 0, left is too small then we move the left to right.
-	- if sum == 0, first we need to store this result. to avoid duplication, we need to jeep all same values of left and right pointers. then to quit this loop, we move left and right to center.
+   - if sum > 0, right is too big then we move the right to left
+   - if sum < 0, left is too small then we move the left to right.
+   - if sum == 0, first we need to store this result. to avoid duplication, we need to jeep all same values of left and right pointers. then to quit this loop, we move left and right to center.
 5. 在最开始的时候可以跳过一次重复解，后面通过left and right pointers can jump all duplications(**但其实我还是有点不懂为什么只有一个不行**)
 
 Python3 code
+
 ```python
 class Solution:
     def threeSum(self, nums: List[int]) -> List[List[int]]:
@@ -463,6 +467,7 @@ Naicheng
 这一题可不简单有好多边界条件需要考虑，Colin看看？
 
 python3
+
 ```python
 def nextPermutation(nums):
     n = len(nums)
@@ -2513,7 +2518,7 @@ Hanfei
 Original thoughts
 
 -  pointer strategy
-- Blocks: zero values
+-  Blocks: zero values
 
 Correct solution
 
@@ -3001,7 +3006,6 @@ Original thoughts:
 Correct solution
 
 ```java
-
 public class Solution {
   protected Integer ROWS = 0;
   protected Integer COLS = 0;
@@ -4607,6 +4611,7 @@ Improved solution:
 }
 }
 ```
+
 Time = O(N)
 
 Space = O(1)
@@ -4710,3 +4715,91 @@ Time O(m * n)
 Space O(n)
 
 ## 10-11 ~ 10-17
+
+---
+
+Most Frequent problem
+
+---
+
+
+
+### [42. Trapping Rain Water](https://leetcode.com/problems/trapping-rain-water) :star::star: :star:
+
+
+
+Correct solution
+
+Two pointer
+
+```java
+class Solution {
+    public int trap(int[] nums) {
+        
+        int lo = 0, hi = nums.length-1, res = 0;
+        int leftMax = 0, rightMax = 0;
+        
+        while(lo <= hi){
+            if(nums[lo] <= nums[hi]){
+                
+                if(nums[lo] > leftMax) leftMax = nums[lo];
+                
+                else res += leftMax - nums[lo];
+                
+                lo++;
+            }
+            else{
+                if(nums[hi] > rightMax)
+                    rightMax = nums[hi];
+                else
+                    res += rightMax - nums[hi];
+                
+                hi--;
+            }
+        }
+        return res;
+    }
+}
+```
+
+Time O(N) Space O(1)
+
+
+
+### [1041. Robot Bounded In Circle](https://leetcode.com/problems/robot-bounded-in-circle)
+
+```java
+class Solution {
+    public boolean isRobotBounded(String instructions) {
+        // north = 0, east = 1, south = 2, west = 3
+        int[][] directions = new int[][]{{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        // Initial position is in the center
+        int x = 0, y = 0;
+        // facing north
+        int idx = 0;
+        
+        for (char i : instructions.toCharArray()) {
+            if (i == 'L')
+                idx = (idx + 3) % 4;
+            else if (i == 'R')
+                idx = (idx + 1) % 4;
+            else {
+                x += directions[idx][0];
+                y += directions[idx][1];   
+            }    
+        }
+        
+        // after one cycle:
+        // robot returns into initial position
+        // or robot doesn't face north
+        return (x == 0 && y == 0) || (idx != 0);
+    }
+}
+```
+
+Time O(N) Space O(1)
+
+### [1235. Maximum Profit in Job Scheduling](https://leetcode.com/problems/maximum-profit-in-job-scheduling)
+
+Hanfei Original thoughts: back track
+
