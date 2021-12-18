@@ -4880,5 +4880,5 @@ Difficulty point:
 2. Last line of text should be left justified
 
 
-Dec 12
+Dec 12 - Dec 18
 
