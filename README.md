@@ -4874,7 +4874,7 @@ class Solution {
 
 
 
-
+## 12-18
 
 ### [68. Text Justification](https://leetcode.com/problems/text-justification/)
 
@@ -4884,6 +4884,13 @@ Difficulty point:
 2. Last line of text should be left justified
 
 
-Dec 12 - Dec 18
+
+Dynamic programming video explanation: https://www.youtube.com/watch?v=RORuwHiblPc
+
+Code explanation: https://www.youtube.com/watch?v=GqXlEbFVTXY
+
+
+
+
 
  
