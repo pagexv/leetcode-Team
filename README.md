@@ -4893,8 +4893,76 @@ Code explanation: https://www.youtube.com/watch?v=GqXlEbFVTXY
 
 ​    
 
+### [815.Bus Routes](https://leetcode.com/problems/bus-routes/)
 
 
 
+ Hanfei:
 
- 
+Original thoughts: using backtrack
+
+Solution
+
+```java
+class Solution {
+    public List<String> fullJustify(String[] words, int maxWidth) {
+        int totalWord = words.length;
+   
+       
+        List<String> result = new ArrayList<>();
+        
+        for(int i = 0; i < totalWord; i++){
+            int wordsLength = words[i].length();
+
+            int j = i + 1;
+            for(; j < totalWord && (wordsLength + words[j].length() + j - i - 1  < maxWidth); ++j){
+                wordsLength += words[j].length();
+            }
+            
+            int diff = maxWidth - wordsLength;
+            int numberOfWords = j - i ;
+            if(numberOfWords == 1 || j >= totalWord){
+                result.add(leftJustify(words,diff,i,j));
+            } else {
+                result.add(middleJustify(words,diff,i,j));
+            }
+            i = j -1 ;
+            
+        }
+        
+        return result;
+    
+    }
+    
+    String middleJustify(String [] words, int diff, int i, int j){
+        int spaceNeeded = j - i - 1;
+            int spaces = diff  / spaceNeeded;
+        int extraSpaces = diff % spaceNeeded;
+        StringBuilder result = new StringBuilder(words[i]);
+         for(int k = i + 1; k < j; ++k){
+             int spacesToApply = spaces + (extraSpaces-- > 0 ? 1 : 0);
+             result.append(" ".repeat(spacesToApply) + words[k]);
+         }
+        
+        return result.toString();
+        
+    }
+        
+    
+    String leftJustify(String [] words, int diff, int i, int j){
+        int spaceOnRight = diff - (j - i - 1);
+        StringBuilder result = new StringBuilder(words[i]);
+        for(int k = i + 1; k < j; ++k){
+            result.append(" " + words[k]);
+        }
+                          
+                          result.append(" ".repeat(spaceOnRight));
+                          return result.toString();
+                          
+                
+    }
+    
+    
+}
+```
+
