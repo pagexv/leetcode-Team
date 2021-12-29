@@ -5037,7 +5037,7 @@ class Solution {
 }
 ```
 
-### [273. Integer to English Words](https://leetcode.com/problems/integer-to-english-words/)
+### [273. Integer to English Words](https://leetcode.com/problems/integer-to-english-words/)  :star:
 
 
 
@@ -5045,7 +5045,7 @@ Java solution:
 
 Divide and conquer
 
-```
+```java
 class Solution {
   public String one(int num) {
     switch(num) {
@@ -5152,5 +5152,82 @@ class Solution {
     return result;
   }
 }
+```
+
+
+
+
+
+### 809[Expressive word](https://leetcode.com/problems/expressive-words/discuss/1653570/Java-Solution-Moduler)
+
+Orignal thoughts:
+
+using linked hash map
+
+Correct solution
+
+```java
+public int expressiveWords(String s, String[] words) {
+	String compressed = compress(s);
+	int count = 0; 
+
+	for (String word : words) {
+		if (canBeExtendedFrom(compressed, word)) count++;
+	}
+	return count;
+}
+
+// compress a string into letter-digit format 
+private String compress(String s) {
+	StringBuilder builder = new StringBuilder();
+	int counter = 1;
+
+	for (int i = 1; i <= s.length(); i++) {
+		if (i == s.length() || s.charAt(i) != s.charAt(i-1)) {
+			builder.append(s.charAt(i-1)).append(counter);
+			counter = 1;
+		} else {
+			counter++;
+		}
+	}
+
+	return builder.toString();
+}
+
+private boolean canBeExtendedFrom(String s, String word) {
+	if (s == null || s.length() == 0) return false;
+
+	int sIndex = 0, sCharCount;
+	int counter = 1; 
+	char sChar; 
+
+	for (int i = 1; i <= word.length(); i++) {
+		if (sIndex >= s.length()) return false; 
+
+		sCharCount = s.charAt(sIndex + 1) - '0'; 
+		sChar = s.charAt(sIndex);
+
+		if (i == word.length() || word.charAt(i) != word.charAt(i - 1)) {
+			// different chars
+			if (sChar != word.charAt(i - 1)) return false; 
+			// smaller counts in s
+			if (sCharCount < counter) return false;
+			// this count (<3) cannot be extended, have to match perfectly
+			if (sCharCount < 3 && sCharCount != counter) return false; 
+			
+			counter = 1; // reset counter
+			sIndex += 2; // move to next letter group
+
+		} else {
+			counter++;
+		}
+	}
+
+	// make sure the given string s doesn't contain excessive letters at the end
+	// e.g. s = "heeeeelloyyyy" and word = "hello" 
+	return sIndex == s.length();
+}
+
+
 ```
 
