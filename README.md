@@ -5327,3 +5327,97 @@ public class FileSystem {
  */
 ```
 
+
+
+### [68 Valid Palndrome](https://leetcode.com/problems/valid-palindrome-ii/)
+
+
+
+**Original solution:**
+
+Didn't handle all the test case where 1 char is removed
+
+Thoughts:
+
+using backtrace to
+
+```java
+class Solution {
+    public boolean validPalindrome(String s) {
+        
+        int start = 0;
+        int end = s.length() - 1;
+        int delete = 0;
+        while(start < end){
+            
+            if(s.charAt(start) != s.charAt(end)){
+                System.out.print(s.charAt(start));
+                System.out.println(start);
+                System.out.print(s.charAt(end));
+                System.out.println(end);
+                if(delete > 0){
+                    return false;
+                }
+                if (s.charAt(start + 1) == s.charAt(end)){
+                    start++;
+                    delete++;
+                    continue;
+                }
+                
+                if ( s.charAt(start) == s.charAt(end - 1)){
+                    end--;
+                    delete++;
+                    continue;
+                }
+          
+                
+                return false;
+                
+            }
+                
+            start ++;
+            end --;
+        }
+        
+        return true;
+    }
+}
+```
+
+
+
+Correct solution
+
+```java
+class Solution {
+    
+	public boolean validPalindrome(String s) {
+        return isPalindrome(s, 0, s.length() - 1, false);
+    }
+    
+    public boolean isPalindrome(final String s, int leftIndex, int rightIndex, final boolean isCharacterDeleted){
+        
+        while(leftIndex < rightIndex){
+            
+            if(s.charAt(leftIndex) != s.charAt(rightIndex)){
+                
+                if(isCharacterDeleted){
+                    return false;
+                }
+                
+				// isPalindrome(s, leftIndex + 1, rightIndex, true) for cases like "ececabbacec" 
+				// isPalindrome(s, leftIndex, rightIndex - 1, true) for cases like "abccbab"
+                return isPalindrome(s, leftIndex + 1, rightIndex, true) || isPalindrome(s, leftIndex, rightIndex - 1, true);
+            }
+            
+            ++leftIndex;
+            --rightIndex;
+            
+        }
+		
+        return true;
+    }
+}
+
+```
+
