@@ -5504,3 +5504,27 @@ class Solution {
 }
 ```
 
+Better solution
+
+```java
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        Arrays.sort(nums);
+        int j =1;
+        for(int i = 0 ; i<nums.length ; i++){
+            if(nums[i]>0){
+                if(nums[i]!=j && nums[i]>j){
+                    return j;
+                }else if(nums[i]>=j){
+                    j++;
+                }
+                
+            }
+        }
+        return j;
+    }
+}
+```
+
+Time O(N), Space O(1)
+
