@@ -5504,7 +5504,7 @@ class Solution {
 }
 ```
 
-Better solution
+**Better solution**
 
 ```java
 class Solution {
@@ -5527,4 +5527,69 @@ class Solution {
 ```
 
 Time O(N), Space O(1)
+
+
+
+### 829 Consecutive Number Sum :star::star:
+
+**Original thoughts:**
+
+**Result**: Time exceed limit
+
+```java
+class Solution {
+    
+    int finalResult = 0;
+    public int countNumber(int currentSum, int nextNum, int target ){
+        if (currentSum > target){
+            return 0;
+        }
+        
+        if(currentSum == target){
+            return 1;
+        }
+        return countNumber(currentSum + nextNum, nextNum + 1,target);
+    }
+    
+    
+    public int consecutiveNumbersSum(int n) {
+        int result = 0; 
+        for(int i = 1; i <= n; i++){
+            result += countNumber(0, i,n);
+        }
+        
+        
+        
+        return result;
+    }
+}
+```
+
+**Correct solution:**
+
+Formula for the sum of natural numbers
+
+https://en.wikipedia.org/wiki/1_%2B_2_%2B_3_%2B_4_%2B_%E2%8B%AF
+
+```java
+class Solution {
+    public int consecutiveNumbersSum(int N) {
+        int count = 0;
+        // x > 0 --> N/k - (k + 1)/2 > 0
+        int upper_limit = (int)(Math.sqrt(2 * N + 0.25) - 0.5);
+        for (int k = 1; k <= upper_limit; ++k) {
+            // x should be an integer
+            if ((N - k * (k + 1) / 2) % k == 0)
+                count++;
+        }
+        return count;
+    }
+}
+```
+
+Time O(N^0.5), Space O(1)
+
+![image-20211229201843798](D:\leetcode-Team\pictures\image-20211229201843798.png)
+
+![image-20211229201955616](D:\leetcode-Team\pictures\image-20211229201955616.png)
 
