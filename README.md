@@ -5688,3 +5688,55 @@ class Solution {
 
 - Time complexity : \mathcal{O}(N)O(*N*) in the average case, \mathcal{O}(N^2)O(*N*2) in the worst case.
 - Space complexity : \mathcal{O}(1)O(1).
+
+### [1326 Minimum Number of Taps to Open to Water a Garden](https://leetcode.com/problems/minimum-number-of-taps-to-open-to-water-a-garden/)
+
+
+
+**Original solution**
+
+using intervals:
+
+sort according to the start time and try to find the largest next interval
+
+**Improved solution**
+
+```java
+class Solution {
+    public int minTaps(int n, int[] ranges) {
+        int[] dp = new int[n + 1];
+        for(int i = 0; i <= n; i++){
+            int start = Math.max(0, i - ranges[i]);
+            int end = i + ranges[i];
+            dp[start] = Math.max(dp[start], end);
+        }
+        int count = 0;
+        int next = 0;
+        int farthest = 0;
+        // 1) validate that we can cover the entire garden with taps.
+        // 2) provide the minimum number of taps to provide full coverage.
+        //
+        // both of these cases can be achieved by starting at position 0
+        // in the garden, and moving forward till the end of the max position
+        // at the start, all the while gathering a potential next endpoint
+        // (the largest in the current range we are iterating through)
+        // We will do this until there are no more next endpoints to reach
+        // if the final endpoint we reach is n, return the total number 
+        // of times we have changed endpoints (this is garunteed to be the 
+        // minimum number of taps to fill the garden). If the final endpoint 
+        // we reached was not n, then return -1 as we have proven that it is 
+        // impossible to cover the entire garden with the given taps.
+        for(int i = 0; i <= n; i++){
+            next = Math.max(next, dp[i]);
+            if(i == farthest){
+                count++;
+                farthest = next;
+                if(farthest >= n) return count;
+            }
+        }
+        return farthest >= n? count: -1;
+    }
+}
+```
+
+Time & Space O(N)
