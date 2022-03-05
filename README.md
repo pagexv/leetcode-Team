@@ -5747,7 +5747,13 @@ Time & Space O(N)
 
 
 
-[528 Random pick weight](https://leetcode.com/problems/random-pick-with-weight/)
+### [528 Random pick weight](https://leetcode.com/problems/random-pick-with-weight/)
+
+
+
+Original thoughts:
+
+
 
 ```java
 class Solution {
@@ -5777,5 +5783,70 @@ class Solution {
         return i - 1;
   }
 }
+```
+
+
+
+## [1396. Design Underground System](https://leetcode.com/problems/design-underground-system/)
+
+Original thoughts
+
+Append time / start end time 7 - 3 - 2, and in the end, do a split string
+
+```java
+class UndergroundSystem {
+    
+    Map<Integer, String> customerCheckInMap;
+    Map<String,String> averageTimeMap;
+
+    public UndergroundSystem() {
+        customerCheckInMap = new HashMap<>();
+        averageTimeMap = new HashMap<>();
+    }
+    
+    public void checkIn(int id, String stationName, int t) {
+        String checkInInfo = stationName + "-" + t;
+        customerCheckInMap.put(id, checkInInfo);
+    }
+    
+    public void checkOut(int id, String stationName, int t) {
+            String checkIn = customerCheckInMap.get(id);
+            String [] checkInInfoArray = checkIn.split("-");
+            String route = checkInInfoArray[0] + "-" + stationName;
+            Integer startTime = Integer.parseInt(checkInInfoArray[1]);
+            int timeCost = t - startTime;
+            
+            String averageTime = averageTimeMap.get(route);
+            if(averageTime == null){
+                averageTimeMap.put(route, String.valueOf(timeCost));
+            } else {
+                averageTime += "-" + timeCost;
+                averageTimeMap.put(route, averageTime);
+                
+            }
+    }
+    
+    public double getAverageTime(String startStation, String endStation) {
+        String route = startStation + "-" + endStation;
+        String time = averageTimeMap.get(route);
+        String [] timeArray = time.split("-");
+        Integer timeTotal = 0;
+        int count = 0;
+        for(String timeStr : timeArray){
+            timeTotal += Integer.valueOf(timeStr);
+            count+=1;
+        }
+        
+        return timeTotal  * 1.0 / count;
+    }
+}
+
+/**
+ * Your UndergroundSystem object will be instantiated and called as such:
+ * UndergroundSystem obj = new UndergroundSystem();
+ * obj.checkIn(id,stationName,t);
+ * obj.checkOut(id,stationName,t);
+ * double param_3 = obj.getAverageTime(startStation,endStation);
+ */
 ```
 
