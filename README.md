@@ -5854,7 +5854,7 @@ class UndergroundSystem {
 
 
 
-## [\314. Binary Tree Vertical Order Traversal](https://leetcode.com/problems/binary-tree-vertical-order-traversal/)
+## [\314. Binary Tree Vertical Order Traversal](https://leetcode.com/problems/binary-tree-vertical-order-traversal/) :checkered_flag:
 
 BFS algorithm
 
@@ -5907,7 +5907,7 @@ class Solution {
 }
 ```
 
-## [236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+## [236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/) :checkered_flag:
 
 Tree recursion
 
@@ -5955,3 +5955,56 @@ class Solution {
 }
 ```
 
+## 227. Basic Calculator II:checkered_flag:
+
+**Knowledge check**
+
+Using stack knowledge
+
+Pop and push when * and /
+
+Pop only when + -
+
+```java
+class Solution {
+    public int calculate(String s) {
+
+        if (s == null || s.isEmpty()) return 0;
+        int len = s.length();
+        Stack<Integer> stack = new Stack<Integer>();
+        int currentNumber = 0;
+        char operation = '+';
+        for (int i = 0; i < len; i++) {
+            char currentChar = s.charAt(i);
+            if (Character.isDigit(currentChar)) {
+                currentNumber = (currentNumber * 10) + (currentChar - '0');
+            }
+            if (!Character.isDigit(currentChar) && !Character.isWhitespace(currentChar) || i == len - 1) {
+                if (operation == '-') {
+                    stack.push(-currentNumber);
+                }
+                else if (operation == '+') {
+                    stack.push(currentNumber);
+                }
+                else if (operation == '*') {
+                    stack.push(stack.pop() * currentNumber);
+                }
+                else if (operation == '/') {
+                    stack.push(stack.pop() / currentNumber);
+                }
+                operation = currentChar;
+                currentNumber = 0;
+            }
+        }
+        int result = 0;
+        while (!stack.isEmpty()) {
+            result += stack.pop();
+        }
+        return result;
+    }
+}
+
+```
+
+- Time Complexity: O(*n*), where *n* is the length of the string *s*. We iterate over the string s*s* at most twice.
+- Space Complexity:O(*n*), where *n* is the length of the string *s*.
