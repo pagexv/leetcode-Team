@@ -6008,3 +6008,60 @@ class Solution {
 
 - Time Complexity: O(*n*), where *n* is the length of the string *s*. We iterate over the string s*s* at most twice.
 - Space Complexity:O(*n*), where *n* is the length of the string *s*.
+
+## 23.Merge k sorted list
+
+> Strategy: use collections.sort
+
+
+
+```java
+class Solution {
+    public ListNode mergeKLists(ListNode[] lists) {
+    List<Integer> l = new ArrayList<Integer>();
+   
+    for (ListNode ln : lists) {
+        while (ln != null) {
+            l.add(ln.val);
+            ln = ln.next;
+        }
+    }
+   
+    Collections.sort(l);
+ 
+    ListNode head = new ListNode(0);
+    ListNode h = head;
+    for (int i : l) {
+        ListNode t = new ListNode(i);
+        h.next = t;
+        h = h.next;
+    }
+    h.next = null;
+    return head.next;
+}
+}
+```
+
+Python is faster than java
+
+```python
+class Solution(object):
+    def mergeKLists(self, lists):
+        """
+        :type lists: List[ListNode]
+        :rtype: ListNode
+        """
+        self.nodes = []
+        head = point = ListNode(0)
+        for l in lists:
+            while l:
+                self.nodes.append(l.val)
+                l = l.next
+        for x in sorted(self.nodes):
+            point.next = ListNode(x)
+            point = point.next
+        return head.next
+```
+
+![image-20220310200459163](D:\leetcode-Team\pictures\image-20220310200459163.png)
+
