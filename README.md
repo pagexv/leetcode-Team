@@ -5747,7 +5747,7 @@ Time & Space O(N)
 
 
 
-## [528 Random pick weight](https://leetcode.com/problems/random-pick-with-weight/)
+### [528 Random pick weight](https://leetcode.com/problems/random-pick-with-weight/)
 
 
 
@@ -5787,7 +5787,7 @@ class Solution {
 
 
 
-## [1396. Design Underground System](https://leetcode.com/problems/design-underground-system/)
+### [1396. Design Underground System](https://leetcode.com/problems/design-underground-system/)
 
 Original thoughts
 
@@ -5854,7 +5854,7 @@ class UndergroundSystem {
 
 
 
-## [\314. Binary Tree Vertical Order Traversal](https://leetcode.com/problems/binary-tree-vertical-order-traversal/) :checkered_flag:
+### [\314. Binary Tree Vertical Order Traversal](https://leetcode.com/problems/binary-tree-vertical-order-traversal/) :checkered_flag:
 
 BFS algorithm
 
@@ -5907,7 +5907,7 @@ class Solution {
 }
 ```
 
-## [236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/) :checkered_flag:
+### [236. Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/) :checkered_flag:
 
 Tree recursion
 
@@ -5955,7 +5955,7 @@ class Solution {
 }
 ```
 
-## 227. Basic Calculator II:checkered_flag:
+### 227. Basic Calculator II:checkered_flag:
 
 **Knowledge check**
 
@@ -6009,7 +6009,7 @@ class Solution {
 - Time Complexity: O(*n*), where *n* is the length of the string *s*. We iterate over the string s*s* at most twice.
 - Space Complexity:O(*n*), where *n* is the length of the string *s*.
 
-## 23.Merge k sorted list
+### 23.Merge k sorted list 
 
 > Strategy: use collections.sort
 
@@ -6064,4 +6064,167 @@ class Solution(object):
 ```
 
 ![image-20220310200459163](D:\leetcode-Team\pictures\image-20220310200459163.png)
+
+### 973 K closest points to origin
+
+> Knowledge about nearest point
+
+```java
+class Solution {
+    public int[][] kClosest(int[][] points, int k) {
+        // Sort the array with a custom lambda comparator function
+        Arrays.sort(points, (a, b) -> squaredDistance(a) - squaredDistance(b));
+        
+        // Return the first k elements of the sorted array
+        return Arrays.copyOf(points, k);
+    }
+    
+    private int squaredDistance(int[] point) {
+        // Calculate and return the squared Euclidean distance
+        return point[0] * point[0] + point[1] * point[1];
+    }
+};
+```
+
+![image-20220310201231990](D:\leetcode-Team\pictures\image-20220310201231990.png)
+
+### 50 Pow of (X, n)
+
+
+
+Original solution
+
+> Brute force
+
+```java
+class Solution {
+    public double myPow(double x, int n) {
+        double result = 1;
+        for(int i = 1; i <= Math.abs(n); i++){
+            result *= x;
+        }
+        
+        if(n < 0){
+            return 1 / result;
+        }
+        
+        return result;
+    }
+}
+```
+
+
+
+Use half of n to solve the problem
+
+```java
+class Solution {
+    private double fastPow(double x, long n) {
+        if (n == 0) {
+            return 1.0;
+        }
+        double half = fastPow(x, n / 2);
+        if (n % 2 == 0) {
+            return half * half;
+        } else {
+            return half * half * x;
+        }
+    }
+    public double myPow(double x, int n) {
+        long N = n;
+        if (N < 0) {
+            x = 1 / x;
+            N = -N;
+        }
+
+        return fastPow(x, N);
+    }
+};
+```
+
+
+
+## 3-22
+
+## [828. Count Unique Characters of All Substrings of a Given String](https://leetcode.com/problems/count-unique-characters-of-all-substrings-of-a-given-string/)
+
+Dynamic programming
+
+```java
+class Solution {
+    public int uniqueLetterString(String s) {
+        // by brute force
+        // for each i-j we sum up the uniqueLetterString
+        // => n*m
+        // but we are for sure doing some recomputation 
+        // Note: this is sub string
+        // so it is continous 
+        // the goal is to iterated all sub string
+        // so we care about the length =>
+        // dp[i][j] =  sum(dp[k][m]) where k and m are substring of i-j. can't find the relation
+        // if unqiuecHAR = s,length then 
+        //   5*1 + 4*2 + 3*3 + 2*4 + 1*5
+        //   5 + 8 + 9 + 8 + 5 => will be the result
+		// think about what should we do on each index.
+        // when we try to include the current idx
+        // if the current i is not an duplicate =>
+        // if the current i is a duplicate => 
+        // so since the sum which we want to form is accumulative  => I can build it forward
+        // 1 + 2 + 3 + 4 + 5 
+		// we can reuse the sum preivous idx as it will exclude the non unqiue count before current count and we don't need to compute it again
+		// so dp[i] = substring length count that include the char at current idx. 
+		// now think about the logic : 
+        //  how do we know when we should decrease value to aovid over count
+        // ie: if a char appear two times befoer the current idx 
+        //        then we will need to -2 for the segemnt between first occurence of a and second occurence of a
+        //        and for the segement befoer first occurence we should - 3. 
+        // which is not really good, wait I must missed some thing lets draw it out. 
+		
+        // Man this is a bit tricky as I have to draw out the pattern to see it first took me around 25 mins to come up this idea
+        // Final Logic:
+        //   1. if current char is not duplicate
+        //       // this is because we want to append the current char to all previous substring 
+        //       // => increase the previous Sum of sub string length by 1 =>  i + 1 will be the number of substring we want to count.
+        //       currentSum = currentSum + currentIdx + 1;
+        //   2. if current char is its second occurence 
+        //   we will want to first increase the substring between currentIdx - lastoccurence by 1, as those sub string still consider current char as unqiue
+        //   and the we will want to decrease the all the subtring before last occurence, include last occurence by 1, as in previous count, we count the current char as unique in those substring and now it no a unqiue char anymore
+        //       currentSum = currentSum + (currentIdx - lastoccurence) - (last occurence + 1)
+        //   3. if current char is its third or forth ...ect ourrcence 
+        //  we will want to first increase the substring between currentIdx - lastoccurence by 1 as before
+        //  and the we will want to decrease the all the subtring between second last and last occurence by 1 as in previous count, we count the current char as unique in those substring and now it no a unqiue char anymore
+        //  we don't care about the sub string before the second last occur as they already exclude the count of current char
+        //       currentSum = currentSum + (currentIdx - lastoccurence) - (last occurence - second last ocurrence)
+        // => O(n) run time and O(1) space !!!
+        int[] freq = new int[26];
+        int[] lastOccur = new int[26];
+        int[] secondLastOccur = new int[26];
+        int currentSum = 0; 
+        int res = 0;
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            freq[c - 'A'] ++;
+            if (freq[c - 'A'] == 1) {
+                currentSum = currentSum + i + 1;
+            } else if (freq[c - 'A'] == 2) {
+                currentSum = currentSum + (i - lastOccur[c - 'A']) - (lastOccur[c - 'A'] + 1);
+            } else {
+                currentSum = currentSum + (i - lastOccur[c - 'A']) - (lastOccur[c - 'A'] - secondLastOccur[c - 'A']);
+            }
+            if (freq[c - 'A'] != 1) {
+                secondLastOccur[c - 'A'] = lastOccur[c - 'A'];
+            }
+            lastOccur[c - 'A'] = i;
+            res += currentSum;
+        }
+        return res;
+
+    }
+
+}
+```
+
+```
+// => O(n) run time and O(1) space !!!
+```
 
