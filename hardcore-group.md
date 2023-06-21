@@ -236,3 +236,5 @@ class Solution {
 ```
 
 Time O(M * N) Space O(M * N)
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/4e717b46-bb76-49b8-ae4a-4368edae8b3a)
+
