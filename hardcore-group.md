@@ -133,17 +133,20 @@ class Solution {
         if(word2Size == 0){
             return word1Size;
         }
-        
+
+        // initialize the tables
         int dp[][] = new int[word1Size + 1][word2Size + 1];
-        
+
+        // initialize all the left row
         for(int i = 1; i <= word1Size; i++){
             dp[i][0] = i;
         }
-        
+        // initialize all the top col
         for(int i = 1; i < word2Size; i++){
             dp[0][i] = i;
         }
-        
+
+        // calculating the optimal solution, and the result is in the right cornor
         for(int i = 1; i <= word1Size; i++){
             for(int j = 1; j <= word2Size; j++){
                 if(word2.charAt(j-1) == word1.charAt(i - 1)){
@@ -159,3 +162,77 @@ class Solution {
 }
 
 ```
+Time O(M * N) Space O(M * N)
+
+Alternative approach: Top down / recursion + memorization
+
+
+```java
+class Solution {
+    
+    int [][] memo;
+    public int minDistance(String word1, String word2) {
+        memo = new int [word1.length()+1][word2.length()+1];
+
+        return dp(word1.length() ,  word2.length() , word1, word2);
+    }
+    
+    
+    public int dp(int word1Index, int word2Index, String word1, String word2){
+        if(word1Index <= 0){
+            return word2Index;
+        }
+        
+        if(word2Index <= 0){
+            return word1Index;
+        }
+        
+        if(memo[word1Index][word2Index] != 0){
+            return memo[word1Index][word2Index];
+        }
+        
+        if(word1.charAt(word1Index-1) == word2.charAt(word2Index-1)){
+            return dp(word1Index-1, word2Index-1, word1, word2);
+        } else {
+            // enumerate all possible cases
+            // word1 = horse, word2 = ros
+            // First scan
+            // word1index = 4, word2index = 3
+        //     horse
+        //       ros
+       //          ^
+            // possible add: word1 add a "e" to match, word1 = horses, word2 = ros. Since the last char of word1 & word2 will match
+       //      horses       word1's current postion = word1index + 1
+       //         ros       word2's current position = word2Index
+       //      move to next char word1's current postion becomes = word1index (unchanged)
+      //                         word2's current position becomes = word2Index - 1
+
+            
+            // possible delete: word 1 delete last char, word1 = hors, word2 = ros. Since we are just deleting, no match
+
+        //     hors              word1's current postion = word1index  - 1
+       //       ros              word2's current position = word2Index
+       //         ^
+      //      move to next char word1's current postion becomes = word1index - 1
+      //                         word2's current position becomes = word2Index  (unchanged)
+            // possible replace: word1 replace last char to make them match, so both index - 1
+      //      horss              word1's current postion = word1index 
+      //        ros              word2's current postion = word2index
+      //         ^
+    //         move to next char word1's current postion becomes = word1index - 1
+      //                         word2's current position becomes = word2Index  - 1
+            // possible delete: word1 delete last
+            int add = dp(word1Index, word2Index - 1, word1, word2);
+            int delete = dp(word1Index - 1, word2Index, word1, word2);
+            int replace = dp(word1Index -1 , word2Index -1 , word1, word2);
+            
+            int min = Math.min(add, Math.min(delete, replace)) + 1;
+            // Save the optimal solution in memory
+            memo[word1Index][word2Index] = min;
+        }
+        return memo[word1Index][word2Index];
+    }
+}
+```
+
+Time O(M * N) Space O(M * N)
