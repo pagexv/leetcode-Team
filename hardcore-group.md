@@ -238,3 +238,308 @@ class Solution {
 Time O(M * N) Space O(M * N)
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/4e717b46-bb76-49b8-ae4a-4368edae8b3a)
 
+
+## 2023/06/21 
+
+补档
+
+https://leetcode.com/problems/binary-tree-right-side-view/
+
+### Question 1 
+
+#### Thoughts 1: DFS
+
+Doesn't work because it doesn't consider all possible nodes
+
+```java
+   public List<Integer> rightSideView(TreeNode root) {
+    /*    
+        DFS doesn't work
+        if(root == null){
+            return result;
+        }
+        
+        result.add(root.val);
+       // always add right element first
+        if(root.right != null){
+            return rightSideView(root.right);
+        } else if(root.left != null){
+            return rightSideView(root.left);
+        }
+        
+        return rightSideView(root.right);
+        }
+        */
+```
+
+#### Thoughts 2 : Simple BFS
+
+Doesn't work because it didn't capture any level information
+
+```java
+    List<Integer> result = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    public List<Integer> rightSideView(TreeNode root) {
+    /*    
+        
+        if(root == null){
+            return result;
+        }
+        
+        result.add(root.val);
+       // always add right element first
+        if(root.right != null){
+            return rightSideView(root.right);
+        } else if(root.left != null){
+            return rightSideView(root.left);
+        }
+        
+        return rightSideView(root.right);
+        */
+        
+        // Need to use BFS
+        //         1
+        //       2    3
+        //     4  5   6  7
+        
+        //  1 2 3 6 7
+        
+        stack.push(root);
+        bfs();
+        return result;
+
+    }
+    
+    public void bfs(){
+        
+        
+        if(stack.isEmpty()){
+            return;
+        }
+        
+        TreeNode next = stack.pop();
+        
+        if(next == null){
+            return;
+        }
+        result.add(next.val);
+        
+        if(next.left != null){
+            stack.push(next.left);
+        }
+        if(next.right != null){
+            stack.push(next.right);
+        }
+        
+        if(next.left == null && next.right == null){
+            return;
+        }
+        bfs();
+    }
+```
+
+#### Solution 1
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    
+    List<Integer> result = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    Stack<Integer> level = new Stack<>();
+    public List<Integer> rightSideView(TreeNode root) {
+    /*    
+        
+        if(root == null){
+            return result;
+        }
+        
+        result.add(root.val);
+       // always add right element first
+        if(root.right != null){
+            return rightSideView(root.right);
+        } else if(root.left != null){
+            return rightSideView(root.left);
+        }
+        
+        return rightSideView(root.right);
+        */
+        
+        // Need to use BFS
+        //         1          level 0    curlevel 0  nextlevel = 1, result.size == 0
+        //       2    3       level 1    curlevel 1, pop 3 , => no next level => check  nextlevel = 2, result.size = 1
+        //     4  5            level 2    
+        //       8
+        //  1 2 3 6 7
+        
+        stack.push(root);
+        level.push(0);
+       
+        
+        bfs(0);
+        return result;
+
+    }
+    
+    // level 0: 1       result.size() = 0   before adding
+    // level 1: 2 3     result.size() = 1   before adding
+    // level 2: 4       result.size() = 2   before adding
+    public void bfs(int curLevel){
+        
+        
+        if(stack.isEmpty()){
+            return;
+        }
+        
+        
+        // Popping the stack for latest item
+        // case 1: it is the previous nodes
+        // case 2: the previous nodes don't have children
+        
+        TreeNode next = stack.pop();
+        int prevLevel = level.pop();
+        
+        
+        while(curLevel != prevLevel){
+            
+            // Consider alternatives: curl level > result.size()
+            if(next.left != null){
+                stack.push(next.left);
+                level.push(prevLevel+1);
+            }
+            if(next.right != null){
+                stack.push(next.right);
+                level.push(prevLevel+1);
+            }
+             if(stack.isEmpty()){
+                break;
+            }
+    
+            next = stack.pop();
+            prevLevel = level.pop();
+        }
+        // If we can't find any next level, then return false
+        if(curLevel != prevLevel){
+            return;
+        }
+        if(next == null){
+            return;
+        }
+        result.add(next.val);
+        
+        if(next.left != null){
+            stack.push(next.left);
+            level.push(curLevel+1);
+        }
+        if(next.right != null){
+            stack.push(next.right);
+            level.push(curLevel+1);
+        }
+        
+        
+        
+  
+        bfs(curLevel+1);
+    }
+}
+```
+
+Time O(N) Space O(N)
+
+#### Improved version
+
+> No need to store level & all tree value information
+
+```java
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    
+    List<Integer> result = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    Stack<Integer> level = new Stack<>();
+    public List<Integer> rightSideView(TreeNode root) {
+    /*    
+        
+        if(root == null){
+            return result;
+        }
+        
+        result.add(root.val);
+       // always add right element first
+        if(root.right != null){
+            return rightSideView(root.right);
+        } else if(root.left != null){
+            return rightSideView(root.left);
+        }
+        
+        return rightSideView(root.right);
+        */
+        
+        // Need to use BFS
+        //         1          level 0    curlevel 0  nextlevel = 1, result.size == 0
+        //       2    3       level 1    curlevel 1, pop 3 , => no next level => check  nextlevel = 2, result.size = 1
+        //     4  5            level 2    
+        //       8
+        //  1 2 3 6 7
+        
+
+        
+        bfs(root, 0);
+        return result;
+
+    }
+    
+    // level 0: 1       result.size() = 0   before adding
+    // level 1: 2 3     result.size() = 1   before adding
+    // level 2: 4       result.size() = 2   before adding
+    public void bfs(TreeNode tree, int curLevel){
+        
+        if(tree == null){
+            return;
+        }
+        
+        if(curLevel == result.size()){
+            result.add(tree.val);
+        }
+        
+        
+       bfs(tree.right, curLevel+1);
+       bfs(tree.left, curLevel+1); 
+        
+        
+    }
+}
+```
+
+Time O(N) Space O(H)
+
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/30cc6cbf-a8a2-4d95-8e1b-462be43bbd81)
+
