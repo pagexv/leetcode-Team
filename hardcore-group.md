@@ -543,3 +543,73 @@ Time O(N) Space O(H)
 
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/30cc6cbf-a8a2-4d95-8e1b-462be43bbd81)
 
+
+## 2023/06/22
+
+### Question 1
+https://leetcode.com/problems/h-index/solution/
+
+Given an array of integers citations where citations[i] is the number of citations a researcher received for their ith paper, return the researcher's h-index.
+
+Initial solution
+```java
+class Solution {
+    public int hIndex(int[] citations) {
+        // What is h index
+        // [3,0,6,1,5]
+//                    0 1 3 5 6
+//  at least h paper  5 4 3 2 1
+ // min value         0 1 3 2 1
+        
+          // 1  1  3
+          // 3  3  1
+//min value  1  1  1
+        Arrays.sort(citations);
+        // Need to consider previous citations equals
+        int prevCitation = -1;
+        int numberOfPaperAtLeastPublished = citations.length;
+        int maxResult = 0;
+  
+        for(int i = 0; i < citations.length; i++){
+            //If the previous citation isn't equal calculate how many paper greater or equal to current paper
+            if(prevCitation != citations[i]){
+                numberOfPaperAtLeastPublished = citations.length - i;
+            }
+            prevCitation = citations[i];
+            // Take the min value of citation and # of papers greater than current paper
+            int minValue = Math.min(citations[i], numberOfPaperAtLeastPublished);
+            // Take the max values
+            maxResult = Math.max(maxResult, minValue);
+        }
+        
+        return maxResult;
+    }
+}
+```
+Time O(nlogn) Space O(1)
+
+Optimal solution
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/704a8ec1-f3ee-4258-8fed-833ad906f345)
+
+```java
+public class Solution {
+    public int hIndex(int[] citations) {
+        int n = citations.length;
+        int[] count = new int[n + 1];
+        // counting papers for each citation number
+        for (int c: citations)
+            count[Math.min(n, c)]++;
+        // finding the h-index
+        int k=n; // start with maximum possible answer i.e n and sum=count of number of papers having >=k citatations
+        int sum=count[n];
+        while(k>sum){
+            k--;
+            sum+=count[k];
+        }
+        return k;
+    }
+}
+```
+Time O(n) Space O(1)
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/2ded2e96-174a-4c64-8e16-1562fa77614a)
+
