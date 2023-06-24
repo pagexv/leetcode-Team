@@ -613,3 +613,122 @@ public class Solution {
 Time O(n) Space O(1)
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/2ded2e96-174a-4c64-8e16-1562fa77614a)
 
+
+## 2023/06/22
+
+### Question 1
+https://leetcode.com/problems/game-of-life/solution/
+
+Initial solution
+```java
+class Solution {
+    public void gameOfLife(int[][] board) {
+        int rowLength = board.length;
+        int colLength = board[0].length;
+        
+        int [] neighbor = {-1, 0, 1};
+        int [][] nextGame = new int [rowLength][colLength];
+        
+        
+        for(int i = 0; i < rowLength; i++){
+            for(int j = 0; j < colLength; j++){
+                nextGame[i][j] = board[i][j];
+            }
+        }
+        
+        for(int i = 0; i < rowLength; i++){
+            for(int j = 0; j < colLength; j++){
+                
+                int countLiveNeighbor = 0;
+                for(int k = 0; k < 3; k++){
+                    for (int l = 0; l < 3; l++){
+                        // Important to skip itself
+                        if(k == 1 && l == 1){
+                            continue;
+                        }
+                        int neighborRow = i + neighbor[k];
+                        int neighborCol = j + neighbor[l];
+                        if(neighborRow >= 0 && neighborRow < rowLength &&
+                          neighborCol >=0 && neighborCol < colLength && nextGame[neighborRow][neighborCol] == 1){
+                            countLiveNeighbor++;
+                        }
+                    }
+                }
+                
+                if(nextGame[i][j] == 1 && countLiveNeighbor < 2){
+                    board[i][j] = 0;
+                } else if (nextGame[i][j] == 1 &&countLiveNeighbor <= 3){
+                    board[i][j] = 1;
+                } else if (nextGame[i][j] == 1 &&countLiveNeighbor > 3){
+                   board[i][j] = 0;
+                } else if (nextGame[i][j] == 0 && countLiveNeighbor == 3){
+                    board[i][j] = 1;
+                }
+            }
+        }
+    
+    }
+}
+```
+Time & Space O(MN)
+
+Improved solution:
+Use -1 & 2 to mark those value turned from 0 to 1 & from 1 to 0
+
+
+```java
+class Solution {
+    public void gameOfLife(int[][] board) {
+        int rowLength = board.length;
+        int colLength = board[0].length;
+        
+        int [] neighbor = {-1, 0, 1};
+  
+
+        
+        for(int i = 0; i < rowLength; i++){
+            for(int j = 0; j < colLength; j++){
+                
+                int countLiveNeighbor = 0;
+                for(int k = 0; k < 3; k++){
+                    for (int l = 0; l < 3; l++){
+                        // Important to skip itself
+                        if(k == 1 && l == 1){
+                            continue;
+                        }
+                        int neighborRow = i + neighbor[k];
+                        int neighborCol = j + neighbor[l];
+                        if(neighborRow >= 0 && neighborRow < rowLength &&
+                          neighborCol >=0 && neighborCol < colLength && Math.abs(board[neighborRow][neighborCol]) == 1){
+                            countLiveNeighbor++;
+                        } 
+                    }
+                }
+                
+                if(board[i][j] == 1 && countLiveNeighbor < 2){
+                    board[i][j] = -1; 
+                } else if (board[i][j] == 1 &&countLiveNeighbor > 3){
+                   board[i][j] = -1;
+                } else if (board[i][j] == 0 && countLiveNeighbor == 3){
+                    board[i][j] = 2;
+                }
+            }
+        }
+        
+        
+        for(int i = 0; i < rowLength; i++){
+            for(int j = 0; j < colLength; j++){
+                if(board[i][j] <= 0){
+                    board[i][j] = 0;
+                } else {
+                    board[i][j] = 1;
+                }
+            }
+        }
+    
+    }
+}
+```
+Time O(MN) Space O(1)
+
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/6cca3acd-3cfd-4601-82a8-835efe8604f4)
