@@ -614,7 +614,7 @@ Time O(n) Space O(1)
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/2ded2e96-174a-4c64-8e16-1562fa77614a)
 
 
-## 2023/06/22
+## 2023/06/23
 
 ### Question 1
 https://leetcode.com/problems/game-of-life/solution/
