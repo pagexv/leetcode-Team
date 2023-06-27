@@ -732,3 +732,98 @@ class Solution {
 Time O(MN) Space O(1)
 
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/6cca3acd-3cfd-4601-82a8-835efe8604f4)
+
+
+## 2023/06/26
+
+### Question 1
+https://leetcode.com/problems/majority-element/
+
+Initial solution
+```java
+class Solution {
+    public int majorityElement(int[] nums) {
+        Arrays.sort(nums);
+        return nums[nums.length/2];
+        
+    }
+}
+```
+Time O(nlogn) Space O(1)
+
+
+Optimal solution: Boyer-Moore Voting Algorithm
+```java
+class Solution {
+    public int majorityElement(int[] nums) {
+        int count = 0;
+        Integer candidate = null;
+
+        for (int num : nums) {
+            if (count == 0) {
+                candidate = num;
+            }
+            count += (num == candidate) ? 1 : -1;
+        }
+
+        return candidate;
+    }
+}
+
+```
+Time O(N) Space O(1)
+
+### Question 2
+https://leetcode.com/problems/rotate-array/
+Initial solution
+
+```java
+class Solution {
+    public void rotate(int[] nums, int k) {
+        LinkedList<Integer> result = new LinkedList<>();
+        
+        
+        for(int i = nums.length - 1; i >=0; i--){
+             result.offer(nums[i]);
+        }
+
+        
+        for(int i = 0; i < k; i++){
+            int temp = result.poll();
+            result.offer(temp);
+        }
+        
+         for(int i = nums.length - 1; i >=0; i--){
+              nums[i] = result.poll();
+        }
+        
+    
+    }
+}
+
+```
+Time O(N) Space O(N)
+
+Reverse
+
+```java
+class Solution {
+  public void rotate(int[] nums, int k) {
+    k %= nums.length;
+    reverse(nums, 0, nums.length - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, nums.length - 1);
+  }
+  public void reverse(int[] nums, int start, int end) {
+    while (start < end) {
+      int temp = nums[start];
+      nums[start] = nums[end];
+      nums[end] = temp;
+      start++;
+      end--;
+    }
+  }
+}
+```
+
+Time O(N) Space O(1)
