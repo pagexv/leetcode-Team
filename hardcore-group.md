@@ -827,3 +827,95 @@ class Solution {
 ```
 
 Time O(N) Space O(1)
+
+## 2023/06/27
+
+### Question 1
+
+https://leetcode.com/problems/candy/
+
+Initial solution
+
+Don't forget to stop when no changes happens
+```java
+class Solution {
+    public int candy(int[] ratings) {
+        
+        int [] candies = new int[ratings.length];
+        Arrays.fill(candies, 1);
+        
+        // Stop when no change happen (we may need to traverse multiple times)
+        boolean changed = true;
+        while(changed){
+            changed = false;
+            for(int i = 0; i < ratings.length ; i++){
+            if( i < ratings.length - 1 && ratings[i] > ratings[i+1] && candies[i] <= candies[i+1]){
+                candies[i] = candies[i+1] + 1;
+                changed = true;
+                
+            }
+            
+            if(i > 0 && ratings[i] > ratings[i-1] && candies[i] <= candies[i-1]){
+                candies[i] = candies[i-1] + 1;
+                changed = true;
+             }
+          }
+        }
+        
+        int sum = 0;
+        for(int c : candies){
+            sum += c;
+        }
+        
+        return sum;
+        
+    }
+}
+
+```
+Time O(n^2) Space O(n)
+
+Optimal solution
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/8781b3ef-7853-4e5e-b360-86c0b3aa3bc4)
+
+```java
+public class Solution {
+    public int count(int n) {
+        return (n * (n + 1)) / 2;
+    }
+    public int candy(int[] ratings) {
+        if (ratings.length <= 1) {
+            return ratings.length;
+        }
+        int candies = 0;
+        int up = 0;
+        int down = 0;
+        int oldSlope = 0;
+        for (int i = 1; i < ratings.length; i++) {
+            int newSlope = (ratings[i] > ratings[i - 1]) ? 1 
+                : (ratings[i] < ratings[i - 1] ? -1 
+                : 0);
+
+            if ((oldSlope > 0 && newSlope == 0) || (oldSlope < 0 && newSlope >= 0)) {
+                candies += count(up) + count(down) + Math.max(up, down);
+                up = 0;
+                down = 0;
+            }
+            if (newSlope > 0) {
+                up++;
+            } else if (newSlope < 0) {
+                down++;
+            } else {
+                candies++;
+            }
+
+            oldSlope = newSlope;
+        }
+        candies += count(up) + count(down) + Math.max(up, down) + 1;
+        return candies;
+    }
+}
+```
+Time O(n) Space O(1)
+
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/c130ea21-d50b-478a-b27f-00aff5119f64)
