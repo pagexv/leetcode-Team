@@ -919,3 +919,37 @@ public class Solution {
 Time O(n) Space O(1)
 
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/c130ea21-d50b-478a-b27f-00aff5119f64)
+
+
+## 2023/06/27
+
+### Question 1
+
+https://leetcode.com/problems/minimum-size-subarray-sum/
+
+
+
+```java
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int left = 0;
+        int right = 0;
+        int currentSum = 0;
+        int result = Integer.MAX_VALUE;
+        
+        for(right = 0; right < nums.length; right++){
+            currentSum += nums[right];
+            
+            while(currentSum >= target){
+                result = Math.min(result, right - left + 1);
+                currentSum -= nums[left++];
+            }
+            
+        }
+        
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
+}
+```
+
+Time O(N) Space O(1)
