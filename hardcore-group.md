@@ -1085,3 +1085,92 @@ class Solution {
 Time O(M + N) Space O(N)
 
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/04b57d53-0c59-4165-8fe5-44aed1e98b99)
+
+
+
+## 2023/06/30
+
+### Question 1
+[https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/](https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/)
+
+
+Initial solution: convert this problem to count number of overlapping intervals
+
+```java
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+         Arrays.sort(points, (o1, o2) -> {
+            // We can't simply use the o1[1] - o2[1] trick, as this will cause an 
+            // integer overflow for very large or small values.
+            if (o1[0] == o2[0]) return 0;
+            if (o1[0] < o2[0]) return -1;
+            return 1;
+        });
+        
+        int prevStart = -1;
+        int prevEnd = -1;
+        int count = 0;
+        for(int [] item : points){
+            int currentStart = item[0];
+            int currentEnd = item[1];
+            
+            if(prevStart <= currentStart && currentStart <= prevEnd){
+                prevStart = currentStart;
+                 prevEnd = Math.min(prevEnd, currentEnd);
+            } else {
+                count++;
+                prevStart = currentStart;
+                prevEnd = currentEnd;
+            }
+            
+           
+        }
+        
+        return count;
+        
+    }
+}
+
+```
+
+Time O(NlogN) Space O(N) or O(NlogN) depends on the specific implementation of sort
+
+For instance, the list.sort() function in Python is implemented with the Timsort algorithm whose space complexity is O(N).
+
+In Java, the Arrays.sort() is implemented as a variant of quicksort algorithm whose space complexity is O(logN).
+
+Improved solution:
+sort the end of interval
+
+```java
+class Solution {
+    public int findMinArrowShots(int[][] points) {
+        if (points.length == 0) return 0;
+
+        // sort by x_end
+        Arrays.sort(points, (o1, o2) -> {
+            // We can't simply use the o1[1] - o2[1] trick, as this will cause an 
+            // integer overflow for very large or small values.
+            if (o1[1] == o2[1]) return 0;
+            if (o1[1] < o2[1]) return -1;
+            return 1;
+        });
+
+        int arrows = 1;
+        int xStart, xEnd, firstEnd = points[0][1];
+        for (int[] p: points) {
+            xStart = p[0];
+            xEnd = p[1];
+            // if the current balloon starts after the end of another one,
+            // one needs one more arrow
+            if (firstEnd < xStart) {
+                arrows++;
+                firstEnd = xEnd;
+            }
+        }
+
+        return arrows;
+    }
+}
+```
+Same time space complexity
