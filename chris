@@ -1,0 +1,64 @@
+leetcode 20
+
+Given a string containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. The brackets must close in the correct order.
+
+Examples
+
+"()" and "()[]{}", "[{()}()]" are all valid but "(]" and "([)]" are not.
+
+
+//Method 1: use stack
+TC: O(n)
+SC: O(n)
+public boolean isValid(String input) {
+    // Write your solution here
+    Deque<Character> stack = new ArrayDeque<>();
+    for (Character c : input.toCharArray()) {
+      if (c == '(') {
+        stack.offerFirst(')');
+      } else if (c == '['){
+        stack.offerFirst(']'); 
+      } else if (c == '{') {
+        stack.offerFirst('}');
+      } else if (stack.isEmpty()) {
+        return false;
+      } else {
+        Character ch = stack.pollFirst();
+        if (ch != c) {
+          return false;
+        }
+        continue;
+      }
+    }
+return stack.isEmpty();
+  }
+
+
+
+// method 2: use hashmap and stack， 虽然慢但更加具有普遍性,可以加其他char
+TC: O(n^2)
+SC: O(n)
+public boolean isValid(String s) {
+        Map<Character, Character> map = new HashMap<>();
+        map.put(')', '(');
+        map.put('}', '{');
+        map.put(']', '[');
+          Deque<Character> stack = new ArrayDeque<>();
+        for (int i = 0; i < s.length(); i++) {
+            char symbol = s.charAt(i);
+            if (map.containsKey(symbol)) { // 如果遍历到个右括号
+                if (stack.isEmpty()) { //如果此时栈是空的话返回false
+                    return false;
+                }
+                //弹出栈顶元素
+               Character ch = stack.pollFirst();
+                     //如果弹出的栈顶元素不是左括号
+                if(ch != map.get(symbol)) {
+                  return false;
+                }
+            } else { //如果遍历到非右括号的其他元素
+                stack.offerFirst(symbol);
+            }
+        }
+        return stack.isEmpty();
+    }
