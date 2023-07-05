@@ -1174,3 +1174,54 @@ class Solution {
 }
 ```
 Same time space complexity
+
+
+
+## 2023/07/04
+
+### Question 1
+
+https://leetcode.com/problems/evaluate-reverse-polish-notation/
+
+Solution: Compute the result and store into the stack
+```java
+class Solution {
+    
+    
+    private static final Map<String, BiFunction<Integer, Integer, Integer>> OPERATIONS = new HashMap<>();
+    
+    
+    static {
+        OPERATIONS.put("+", (a, b) -> a + b);
+        OPERATIONS.put("-", (a, b) -> a - b);
+        OPERATIONS.put("*", (a, b) -> a * b);
+        OPERATIONS.put("/", (a, b) -> a / b);
+    }
+    
+    
+    public int evalRPN(String[] tokens) {
+        
+        Stack<Integer> stack = new Stack<>();
+        
+        for(String token : tokens){
+            
+            if(!OPERATIONS.containsKey(token)){
+                stack.push(Integer.valueOf(token));
+                continue;
+            }
+            int number2 = stack.pop();
+            int number1 = stack.pop();
+            
+            BiFunction<Integer, Integer, Integer> operation;
+            operation = OPERATIONS.get(token);
+            int result = operation.apply(number1, number2);
+            stack.push(result);
+        }
+        
+        return stack.pop();
+    }
+}
+```
+
+Time O(N) Space O(N)
+
