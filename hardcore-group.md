@@ -1225,3 +1225,74 @@ class Solution {
 
 Time O(N) Space O(N)
 
+
+## 2023/07/04
+
+### Question 1
+
+
+
+
+
+## 2023/07/06
+
+### Question 1
+https://leetcode.com/problems/copy-list-with-random-pointer/
+```java
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+
+class Solution {
+    public Node copyRandomList(Node head) {
+        
+        if(head == null){
+            return null;
+        }
+        Node ptr = head;
+        
+        while(ptr != null){
+            Node newNode = new Node(ptr.val);
+            // Linked list after weaving cloned nodes would be A->A'->B->B'->C->C'
+            newNode.next = ptr.next;
+            ptr.next = newNode;
+            ptr= newNode.next;
+        }
+        
+        ptr = head;
+        // Now link the random pointers of the new nodes created.
+        while(ptr != null){
+            ptr.next.random = (ptr.random != null) ? ptr.random.next : null;
+            ptr = ptr.next.next;
+        }
+        
+        Node ptr_old = head;
+        Node ptr_new = head.next;
+        Node head_old = head.next;
+        // Unweave the linked list to get back the original linked list and the cloned list.
+    // i.e. A->A'->B->B'->C->C' would be broken to A->B->C and A'->B'->C'
+        while(ptr_old != null){
+            ptr_old.next = ptr_old.next.next;
+            ptr_new.next = (ptr_new.next != null) ? ptr_new.next.next : null;
+            ptr_old = ptr_old.next;
+            ptr_new = ptr_new.next;
+        }
+        
+        return head_old;
+        
+    }
+}
+```
+
+Time O(N) Space O(1)
