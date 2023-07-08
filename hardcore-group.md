@@ -1298,7 +1298,7 @@ class Solution {
 Time O(N) Space O(1)
 
 
-## 2023/07/06
+## 2023/07/07
 
 ### Question 1
 https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/
@@ -1372,3 +1372,6 @@ class Solution {
 Time O(N) Space O(N)
 
 Improved solution
+![image](https://github.com/pagexv/leetcode-Team/assets/33244427/b67965e1-79a6-4fb1-962e-42b7562c24b1)
+
+Time O(N) Space O(1)
