@@ -1375,3 +1375,38 @@ Improved solution
 ![image](https://github.com/pagexv/leetcode-Team/assets/33244427/b67965e1-79a6-4fb1-962e-42b7562c24b1)
 
 Time O(N) Space O(1)
+
+
+## 2023/07/13
+
+### Question 1
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/
+
+```java
+
+class Solution {
+    public int maxProfit(int[] prices) {
+        int size = prices.length;
+        int buy1 = Integer.MAX_VALUE;
+        int buy2 = Integer.MAX_VALUE;
+        //     3,3, 5, 0,0,3,1,4
+        //buy1 3 3  3  0 0 0 0 0
+//     profit1 0 0 -2  2 2 3 3 4
+        int profit1 = 0;
+        int profit2 = 0;
+        
+    
+        for(int i = 0; i < size; i++){
+            buy1 = Math.min(buy1, prices[i]);   
+            profit1 = Math.max(profit1, prices[i] - buy1);
+  
+            buy2 = Math.min(buy2, prices[i]  - profit1);
+            profit2 = Math.max(profit2,prices[i] - buy2);
+        }
+        
+        return  profit2;
+        
+    }
+}
+```
+Time O(N) Space O(1)
