@@ -1501,3 +1501,102 @@ class Solution {
 }
 ```
 Time O(N) Space O(N)
+
+
+## 2023/07/27
+
+### Question 1
+30. Substring with Concatenation of All Words
+https://leetcode.com/problems/substring-with-concatenation-of-all-words/
+
+```java
+class Solution {
+    
+    private HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
+    private int n;
+    private int wordLength;
+    private int subStringSize;
+    private int k;
+    
+    
+    private void slidingWindow(int left, String s, List<Integer> answer){
+        HashMap<String, Integer> wordCountLocal = new HashMap<>();
+        
+        int wordsUsed = 0;
+        boolean excessWord = false;
+        
+        //Needs to make the word size match combination length
+        int right = left;
+        while(right + wordLength <= s.length()){
+            String word = s.substring(right, right+wordLength);
+            
+            //if word not exist
+            if(!wordCount.containsKey(word)){
+                wordCountLocal.clear();
+                wordsUsed = 0;
+                excessWord = false;
+                left = right + wordLength;
+            } else {
+                 // current length check: start
+            while(right - left == subStringSize || excessWord){
+                String leftMostWord = s.substring(left, left + wordLength);
+                // move to next block due to exceessed word
+                left += wordLength;
+                wordCountLocal.put(leftMostWord, wordCountLocal.get(leftMostWord) - 1);
+                
+                if(wordCountLocal.get(leftMostWord) >= wordCount.get(leftMostWord)){
+                    // Check whether words limit is over
+                    excessWord = false;
+                } else {
+                    wordsUsed--;
+                }
+            }
+            // current length check: end
+            
+            wordCountLocal.put(word, wordCountLocal.getOrDefault(word, 0) + 1);
+            if(wordCountLocal.get(word) <= wordCount.get(word)){
+                wordsUsed++;
+            } else {
+                excessWord = true;
+                
+            }
+            
+            if(wordsUsed == k && !excessWord){
+                answer.add(left);
+            }
+        }
+            
+           
+            right += wordLength;
+    }
+        
+        // for(Map.Entry<String,Integer> entry: wordCount.entrySet()){
+        //     if(wordCount.get(entry.getKey()) != wordCountLocal.get(entry.getKey())){
+        //         return;
+        //     }
+        // }
+        // answer.add(startOfLeft);
+    
+}
+    
+    public List<Integer> findSubstring(String s, String[] words) {
+        
+        k =  words.length;
+        wordLength = words[0].length();
+        subStringSize = wordLength * words.length;
+        for(String word: words){
+            wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+        }
+        
+        List<Integer> answer = new ArrayList<>();
+        for(int i = 0; i < wordLength; i++){
+            slidingWindow(i, s, answer);
+        }
+        
+        return answer;
+    }
+}
+```
+
+Time O(lengthOfWordsArray + lengthOfN * lengthOfEachElenebtInWords)
+Space(lengthOfWordsArray + lengthOfEachElenebtInWords)
