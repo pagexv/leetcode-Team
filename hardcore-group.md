@@ -1600,3 +1600,60 @@ class Solution {
 
 Time O(lengthOfWordsArray + lengthOfN * lengthOfEachElenebtInWords)
 Space(lengthOfWordsArray + lengthOfEachElenebtInWords)
+
+## 2023/08/02
+
+### Q1
+LC 172
+https://leetcode.com/problems/factorial-trailing-zeroes/
+
+
+Original solution: exceeds runtime
+```java
+class Solution {
+    
+    int count(int n){
+        if(n == 1){
+            return 1;
+        }
+        return n * count(n-1);
+    }
+    public int trailingZeroes(int n) {
+        int factorial = count(n);
+        int remainder = factorial % 10;
+        int divident = factorial / 10;
+        if(remainder == 0){
+            return String.valueOf(factorial).length() - String.valueOf(divident).length(); 
+        } else {
+            return 0;
+        }
+        
+    }
+}
+```
+
+Correct solution
+Count the occurrence of 5
+
+```java
+
+
+class Solution {
+    
+
+public int trailingZeroes(int n) {
+        
+    int zeroCount = 0;
+    for (int i = 5; i <= n; i += 5) {
+        int currentFactor = i;
+        while (currentFactor % 5 == 0) {
+            zeroCount++;
+            currentFactor /= 5;
+        }
+    }
+    return zeroCount;
+}
+}
+```
+
+Time O(N) Space O(1)
